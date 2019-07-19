@@ -1490,7 +1490,7 @@ Rectangle {
                             tagCuentaCorriente.enabled=mantenimientoCuentasCorriente.enabled
                             tagCuentaCorriente.visible=mantenimientoCuentasCorriente.enabled
 
-                            mantenimientoPromociones.enabled=modeloListaPerfilesComboBox.retornaValorDePermiso(txtNombreDeUsuario.textoInputBox.trim(),"permiteUsarPromociones")
+                            mantenimientoPromociones.enabled= false // modeloListaPerfilesComboBox.retornaValorDePermiso(txtNombreDeUsuario.textoInputBox.trim(),"permiteUsarPromociones")
                             tagPromociones.enabled=mantenimientoPromociones.enabled
                             tagPromociones.visible=mantenimientoPromociones.enabled
 
@@ -2031,7 +2031,7 @@ Rectangle {
             }
         }
 
-        Tag {
+        Tag {            
             id: tagPromociones
             texto: qsTr("Promociones")
             source: "qrc:/imagenes/qml/ProyectoQML/Imagenes/MantenimientoPromociones.png"

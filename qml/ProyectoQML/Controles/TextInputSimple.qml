@@ -27,42 +27,53 @@ Rectangle {
     id: rectangle1
     //width: 500
     width: {
-        if(txtTextInput.text=="" && (txtTextoSombra.text=="" && !txtTextoSombra.visible)){
-            txtTitulo.implicitWidth+txtInformacionError.implicitWidth+50
 
-        }else if(txtTextInput.text=="" && (txtTextoSombra.text!="" && txtTextoSombra.visible)){
-            if(txtTextoSombra.implicitWidth>=(txtTitulo.implicitWidth+txtInformacionError.implicitWidth)){
-                txtTextoSombra.implicitWidth+50
-            }else{
+
+        if(fijoTamanioPersonalizado!=0){
+            fijoTamanioPersonalizado
+        }else{
+
+            if(txtTextInput.text=="" && (txtTextoSombra.text=="" && !txtTextoSombra.visible)){
+
+
                 txtTitulo.implicitWidth+txtInformacionError.implicitWidth+50
+
+            }else if(txtTextInput.text=="" && (txtTextoSombra.text!="" && txtTextoSombra.visible)){
+                if(txtTextoSombra.implicitWidth>=(txtTitulo.implicitWidth+txtInformacionError.implicitWidth)){
+                    txtTextoSombra.implicitWidth+50
+                }else{
+                    txtTitulo.implicitWidth+txtInformacionError.implicitWidth+50
+                }
+            }else if(txtTextInput.text=="" && (txtTextoSombra.text!="" && !txtTextoSombra.visible)){
+
+                txtTitulo.implicitWidth+txtInformacionError.implicitWidth+50
+
             }
-        }else if(txtTextInput.text=="" && (txtTextoSombra.text!="" && !txtTextoSombra.visible)){
+            else if(txtTextInput.text=="" && (txtTextoSombra.text=="" && txtTextoSombra.visible)){
 
-            txtTitulo.implicitWidth+txtInformacionError.implicitWidth+50
-
-        }
-        else if(txtTextInput.text=="" && (txtTextoSombra.text=="" && txtTextoSombra.visible)){
-
-            txtTitulo.implicitWidth+txtInformacionError.implicitWidth+50
-
-        }
-        else if(txtTextInput.text!="" && txtTextoSombra.text==""){
-            if(txtTextInput.implicitWidth>=(txtTitulo.implicitWidth+txtInformacionError.implicitWidth)){
-                txtTextInput.implicitWidth+50
-            }else{
                 txtTitulo.implicitWidth+txtInformacionError.implicitWidth+50
+
             }
-        }else if(txtTextInput.text!="" && (txtTextoSombra.text!="" && !txtTextoSombra.visible)){
-            if(txtTextInput.implicitWidth>=(txtTitulo.implicitWidth+txtInformacionError.implicitWidth)){
-                txtTextInput.implicitWidth+50
-            }else{
-                txtTitulo.implicitWidth+txtInformacionError.implicitWidth+50
+            else if(txtTextInput.text!="" && txtTextoSombra.text==""){
+                if(txtTextInput.implicitWidth>=(txtTitulo.implicitWidth+txtInformacionError.implicitWidth)){
+                    txtTextInput.implicitWidth+50
+                }else{
+                    txtTitulo.implicitWidth+txtInformacionError.implicitWidth+50
+                }
+            }else if(txtTextInput.text!="" && (txtTextoSombra.text!="" && !txtTextoSombra.visible)){
+                if(txtTextInput.implicitWidth>=(txtTitulo.implicitWidth+txtInformacionError.implicitWidth)){
+                    txtTextInput.implicitWidth+50
+                }else{
+                    txtTitulo.implicitWidth+txtInformacionError.implicitWidth+50
+                }
             }
         }
     }
 
     height: 32
     color: "#00000000"
+
+    property int fijoTamanioPersonalizado: 0
 
     property alias textoTitulo: txtTitulo.text
     property alias textoInputBox: txtTextInput.text

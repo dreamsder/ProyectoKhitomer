@@ -49,6 +49,7 @@ QString ModuloConfiguracion::m_VERSION_BD;
 QString ModuloConfiguracion::m_MODO_AVISO_NUEVO_DOCUMENTO;
 QString ModuloConfiguracion::m_MUESTRA_DESCRIPCION_ARTICULO_EXTENDIDA_FACTURACION;
 QString ModuloConfiguracion::m_MODO_CFE;
+QString ModuloConfiguracion::m_CODIGO_BARRAS_A_DEMANDA_EXTENDIDO;
 
 
 
@@ -218,6 +219,10 @@ void ModuloConfiguracion::cargarConfiguracion(){
                 else if(q.value(rec.indexOf("codigoConfiguracion")).toString()=="MODO_CFE"){
                     ModuloConfiguracion::setMODO_CFE(q.value(rec.indexOf("valorConfiguracion")).toString());
                 }
+                else if(q.value(rec.indexOf("codigoConfiguracion")).toString()=="CODIGO_BARRAS_A_DEMANDA_EXTENDIDO"){
+                    ModuloConfiguracion::setCODIGO_BARRAS_A_DEMANDA_EXTENDIDO(q.value(rec.indexOf("valorConfiguracion")).toString());
+                }
+
 
 
 
@@ -340,6 +345,10 @@ QString ModuloConfiguracion::retornaValorConfiguracion(QString _codigoConfigurac
     else if(_codigoConfiguracion=="MODO_CFE"){
         return ModuloConfiguracion::getMODO_CFE();
     }
+    else if(_codigoConfiguracion=="CODIGO_BARRAS_A_DEMANDA_EXTENDIDO"){
+        return ModuloConfiguracion::getCODIGO_BARRAS_A_DEMANDA_EXTENDIDO();
+    }
+
 
 
 

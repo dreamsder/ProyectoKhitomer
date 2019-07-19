@@ -98,14 +98,33 @@ import QtQuick 1.1
                     id: txtDatoAModificar
                     textoInputBox: ""
                     anchors.horizontalCenter: parent.horizontalCenter
-                    width: 297
+                    width: 400
                     anchors.top: parent.top
-                    anchors.topMargin: 70
-                    largoMaximo: 30
+                    anchors.topMargin: 70                                        
+                  //  largoMaximo: 30
+                    largoMaximo: {
+
+                        if(modeloconfiguracion.retornaValorConfiguracion("CODIGO_BARRAS_A_DEMANDA_EXTENDIDO")=="1"){
+                            600
+                        }else{
+                            30
+                        }
+                    }
+
+                    fijoTamanioPersonalizado:{
+                                                  if(modeloconfiguracion.retornaValorConfiguracion("CODIGO_BARRAS_A_DEMANDA_EXTENDIDO")=="1"){
+                                                        400
+                                                  }else{
+                                                        0
+                                                  }
+                                              }
+
+
+
                     botonBorrarTextoVisible: true
                     textoTitulo: {
                                       if(visible){
-                                          modeloListaTipoDocumentosComboBox.retornaDescripcionCodigoADemanda(cbListatipoDocumentos.codigoValorSeleccion)
+                                         modeloListaTipoDocumentosComboBox.retornaDescripcionCodigoADemanda(cbListatipoDocumentos.codigoValorSeleccion)
                                       }else{
                                           ""
                                       }

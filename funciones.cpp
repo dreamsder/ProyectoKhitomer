@@ -1371,6 +1371,20 @@ bool Funciones::actualizacionBaseDeDatos(qlonglong _valor)const{
                 _iterador=false; return false;
             }
             break;
+        case 272:
+            if(!impactoCambioEnBD("ALTER TABLE `DocumentosLineas` CHANGE COLUMN `codigoArticuloBarras` `codigoArticuloBarras` VARCHAR(1000) NOT NULL DEFAULT '' ;","273")){
+                _iterador=false; return false;
+            }
+            break;
+
+        case 273:
+            if(!impactoCambioEnBD("INSERT INTO `Configuracion` (`codigoConfiguracion`, `valorConfiguracion`, `descripcionConfiguracion`) VALUES ('CODIGO_BARRAS_A_DEMANDA_EXTENDIDO', '0', 'Si esta activo, permite escribir hasta 1000 caracteres en el codigo de barras a demanda en las facturas, alterna el enter por el tabulador al confirmar');","274")){
+                _iterador=false; return false;
+            }
+            break;
+
+
+            //
 
 
 

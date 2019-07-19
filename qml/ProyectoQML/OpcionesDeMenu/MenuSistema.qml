@@ -227,6 +227,7 @@ Rectangle {
         /// 1.14.6  :Se agrega soporte para e-remitos en Imix.
         /// 1.14.7  :Corrección sobre descuentos para Dynamia. Cambiar el tipo_descuento de 2 a 1 para indicar por porcentaje.
         /// 1.14.8  :Se agrega soporte para fecha de nacimiento en el mantenimiento de clientes.
+        ///         :Se agrega nuevo parametro de configuración CODIGO_BARRAS_A_DEMANDA_EXTENDIDO el cual permite ingresar muchos datos en el campo codigo de barras a demanda e intercambia el ENTER por tabulación.
 
         Text {
             id: txtCopyright

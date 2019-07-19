@@ -30,7 +30,7 @@ Rectangle{
 
     height: descripcionArticuloExtendido=="" ? 32 : 42
     width: parent.width
-   // height: 200
+   // height: 400
    // width: 2500
     color: "#e9e8e9"
 
@@ -338,6 +338,7 @@ Rectangle{
         }
         color: "#212121"
         text: codigoBarrasArticulo
+        clip: true
         font.family: "Arial"
         horizontalAlignment: Text.AlignHCenter
         smooth: true

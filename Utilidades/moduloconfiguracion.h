@@ -139,6 +139,12 @@ public:
         return m_MODO_CFE;
     }
 
+    static QString getCODIGO_BARRAS_A_DEMANDA_EXTENDIDO(){
+        return m_CODIGO_BARRAS_A_DEMANDA_EXTENDIDO;
+    }
+
+
+
 
 
 
@@ -167,6 +173,8 @@ private:
     static QString m_MODO_AVISO_NUEVO_DOCUMENTO;
     static QString m_MUESTRA_DESCRIPCION_ARTICULO_EXTENDIDA_FACTURACION;
     static QString m_MODO_CFE;
+    static QString m_CODIGO_BARRAS_A_DEMANDA_EXTENDIDO;
+
 
     static void setCANTIDAD_DIGITOS_DECIMALES_MONTO(QString value){
         m_CANTIDAD_DIGITOS_DECIMALES_MONTO=value;
@@ -230,6 +238,9 @@ private:
     }
     static void setMODO_CFE(QString value){
         m_MODO_CFE=value;
+    }
+    static void setCODIGO_BARRAS_A_DEMANDA_EXTENDIDO(QString value){
+        m_CODIGO_BARRAS_A_DEMANDA_EXTENDIDO=value;
     }
 
 

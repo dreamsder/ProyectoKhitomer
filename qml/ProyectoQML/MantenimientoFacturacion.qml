@@ -36,6 +36,11 @@ Rectangle {
 
 
 
+
+
+    property string codigobarrasademandaextendido: "0"
+
+
     property double valorPrecioArticulo: 0.00
     property double valorPrecioArticulo2: 0.00
     property double valorPrecioArticuloRecalculoTotal: 0.00
@@ -389,6 +394,9 @@ Rectangle {
     ///
     /// Setea el nuevo tipo de documento selecionado desde el combobox con la lista de documentos
     function setearDocumento(){
+
+
+
 
         cbListaFormasDePago.textoComboBox=""
         cbListaFormasDePago.codigoValorSeleccion=""
@@ -3862,10 +3870,27 @@ Rectangle {
             anchors.top: flowPieFacturacion.bottom
             anchors.topMargin: 8
 
+
+
             TextInputSimple {
-                id: txtCodigoDeBarrasADemanda
-                //  width: 297
-                largoMaximo: 30
+                id: txtCodigoDeBarrasADemanda                
+                largoMaximo: {
+
+                    if(modeloconfiguracion.retornaValorConfiguracion("CODIGO_BARRAS_A_DEMANDA_EXTENDIDO")=="1"){
+                        600
+                    }else{
+                        30
+                    }
+                }
+
+                fijoTamanioPersonalizado:{
+                                              if(modeloconfiguracion.retornaValorConfiguracion("CODIGO_BARRAS_A_DEMANDA_EXTENDIDO")=="1"){
+                                                    300
+                                              }else{
+                                                    0
+                                              }
+                                          }
+
                 botonBorrarTextoVisible: true
                 textoTitulo: {
                     if(visible){
@@ -3874,10 +3899,13 @@ Rectangle {
                         ""
                     }
                 }
+
+
                 visible: modeloListaTipoDocumentosComboBox.retornaPermisosDelDocumento(cbListatipoDocumentos.codigoValorSeleccion,"utilizaCodigoBarrasADemanda")
 
-                onEnter: {
+                onTabulacion: {
 
+                    if(modeloconfiguracion.retornaValorConfiguracion("CODIGO_BARRAS_A_DEMANDA_EXTENDIDO")=="1"){
 
                     funcionesmysql.loguear("QML::txtCodigoDeBarrasADemanda::onEnter")
 
@@ -4308,6 +4336,450 @@ Rectangle {
 
                         }
                     }
+
+
+                    }
+
+                }
+
+                onEnter: {
+
+                    if(modeloconfiguracion.retornaValorConfiguracion("CODIGO_BARRAS_A_DEMANDA_EXTENDIDO")=="0"){
+
+                    funcionesmysql.loguear("QML::txtCodigoDeBarrasADemanda::onEnter")
+
+
+                    if(txtPrecioItemManualFacturacion.visible){
+                        if(txtCantidadArticulosFacturacion.textoInputBox.trim()!="" && txtCantidadArticulosFacturacion.textoInputBox.trim()!="0"){
+
+                            //////////////////////////////
+                            /////////////////////////////
+                            /////////////////////////////
+                            valorArticuloInterno=modeloArticulos.existeArticulo(txtArticuloParaFacturacion.textoInputBox.trim());
+
+                            if(valorArticuloInterno!=""){
+
+
+
+                                if(modeloArticulos.retornaArticuloActivo(valorArticuloInterno) || modeloListaTipoDocumentosComboBox.retornaPermisosDelDocumento(cbListatipoDocumentos.codigoValorSeleccion,"utilizaArticulosInactivos")){
+
+                                    if(txtCodigoClienteFacturacion.textoInputBox!=""){ //Hay un cliente seleccionado
+
+                                        var listaPrecioSeleccionada
+                                        if(cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="" || cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="-1"){
+                                            listaPrecioSeleccionada=modeloListasPrecios.retornaListaPrecioDeCliente(txtFechaPrecioFacturacion.textoInputBox.trim(), txtCodigoClienteFacturacion.textoInputBox.trim(),txtTipoClienteFacturacion.codigoValorSeleccion.trim())
+                                        }else{
+                                            listaPrecioSeleccionada=cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion
+                                        }
+                                        if(listaPrecioSeleccionada!=""){
+
+                                            var precioArticuloSelecionado=modeloListaPrecioArticulos.retornarPrecioDeArticuloEnBaseDeDatos(valorArticuloInterno,listaPrecioSeleccionada)
+
+                                            var cotizacion=1;
+                                            valorPrecioArticulo2=precioArticuloSelecionado
+
+                                            if(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)!=cbListaMonedasEnFacturacion.codigoValorSeleccion){
+
+                                                if(modeloListaMonedas.retornaMonedaReferenciaSistema()==modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)){
+                                                    cotizacion=modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                                    valorPrecioArticulo2=precioArticuloSelecionado/cotizacion
+                                                }else{
+
+                                                    if(cbListaMonedasEnFacturacion.codigoValorSeleccion==modeloListaMonedas.retornaMonedaReferenciaSistema()){
+                                                        cotizacion=modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno))
+                                                        valorPrecioArticulo2=precioArticuloSelecionado*cotizacion
+                                                    }else{
+                                                        valorPrecioArticulo2=(precioArticuloSelecionado*modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)))/modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                                    }
+                                                }
+                                            }
+
+                                            txtPrecioItemManualFacturacion.textoInputBox=valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))
+                                            txtPrecioItemManualFacturacion.tomarElFoco()
+
+                                        }else{
+
+                                            var precioArticuloSelecionadoSinLista
+                                            if(cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="" || cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="-1"){
+                                                precioArticuloSelecionadoSinLista=modeloListaPrecioArticulos.retornarPrecioDeArticuloEnBaseDeDatos(valorArticuloInterno,1)
+                                            }else{
+                                                precioArticuloSelecionadoSinLista=modeloListaPrecioArticulos.retornarPrecioDeArticuloEnBaseDeDatos(valorArticuloInterno,cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion)
+                                            }
+
+
+                                            var cotizacion2=1;
+                                            valorPrecioArticulo2=precioArticuloSelecionadoSinLista
+
+                                            if(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)!=cbListaMonedasEnFacturacion.codigoValorSeleccion){
+
+                                                if(modeloListaMonedas.retornaMonedaReferenciaSistema()==modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)){
+                                                    cotizacion2=modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                                    valorPrecioArticulo2=precioArticuloSelecionadoSinLista/cotizacion2
+                                                }else{
+                                                    if(cbListaMonedasEnFacturacion.codigoValorSeleccion==modeloListaMonedas.retornaMonedaReferenciaSistema()){
+                                                        cotizacion2=modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno))
+                                                        valorPrecioArticulo2=precioArticuloSelecionadoSinLista*cotizacion2
+                                                    }else{
+                                                        valorPrecioArticulo2=(precioArticuloSelecionadoSinLista*modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)))/modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                                    }
+                                                }
+                                            }
+
+                                            txtPrecioItemManualFacturacion.textoInputBox=valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))
+                                            txtPrecioItemManualFacturacion.tomarElFoco()
+                                        }
+
+                                    }else{
+
+                                        var precioArticuloSelecionadoSinListaySinCliente
+                                        if(cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="" || cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="-1"){
+                                            precioArticuloSelecionadoSinListaySinCliente=modeloListaPrecioArticulos.retornarPrecioDeArticuloEnBaseDeDatos(valorArticuloInterno,1)
+                                        }else{
+                                            precioArticuloSelecionadoSinListaySinCliente=modeloListaPrecioArticulos.retornarPrecioDeArticuloEnBaseDeDatos(valorArticuloInterno,cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion)
+                                        }
+
+                                        var cotizacion3=1;
+                                        valorPrecioArticulo2=precioArticuloSelecionadoSinListaySinCliente
+
+                                        if(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)!=cbListaMonedasEnFacturacion.codigoValorSeleccion){
+                                            if(modeloListaMonedas.retornaMonedaReferenciaSistema()==modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)){
+                                                cotizacion3=modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                                valorPrecioArticulo2=precioArticuloSelecionadoSinListaySinCliente/cotizacion3
+                                            }else{
+                                                if(cbListaMonedasEnFacturacion.codigoValorSeleccion==modeloListaMonedas.retornaMonedaReferenciaSistema()){
+                                                    cotizacion3=modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno))
+                                                    valorPrecioArticulo2=precioArticuloSelecionadoSinListaySinCliente*cotizacion3
+                                                }else{
+                                                    valorPrecioArticulo2=(precioArticuloSelecionadoSinListaySinCliente*modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)))/modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                                }
+
+                                            }
+                                        }
+
+                                        txtPrecioItemManualFacturacion.textoInputBox=valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))
+                                        txtPrecioItemManualFacturacion.tomarElFoco()
+                                    }
+
+                                }else{
+                                    txtArticuloParaFacturacion.mensajeError("Artículo "+valorArticuloInterno+" incativo.")
+                                    txtArticuloParaFacturacion.textoInputBox=""
+                                    txtArticuloParaFacturacion.tomarElFocoP()
+                                }
+
+                            }else{
+                                txtArticuloParaFacturacion.tomarElFocoP()
+
+                            }
+
+                            ////////////////////////////
+                            /////////////////////////////
+                            /////////////////////////////
+                        }
+                    }else if(txtCostoArticuloMonedaReferencia.visible){
+                        if(txtCantidadArticulosFacturacion.textoInputBox.trim()!="" && txtCantidadArticulosFacturacion.textoInputBox.trim()!="0"){
+                            txtCostoArticuloMonedaReferencia.tomarElFoco()
+                        }
+                    }else{
+
+
+                        valorArticuloInterno=modeloArticulos.existeArticulo(txtArticuloParaFacturacion.textoInputBox.trim());
+
+                        if(valorArticuloInterno!="" && !superaCantidadMaximaLineasDocumento()){
+
+                            ///Chequeo que modo de calculo de total esta seteado
+                            var modoCalculoTotal=modeloconfiguracion.retornaValorConfiguracion("MODO_CALCULOTOTAL");
+
+                            txtArticuloParaFacturacion.textoInputBox=valorArticuloInterno
+
+                            if(modeloArticulos.retornaArticuloActivo(valorArticuloInterno) || modeloListaTipoDocumentosComboBox.retornaPermisosDelDocumento(cbListatipoDocumentos.codigoValorSeleccion,"utilizaArticulosInactivos")){
+
+
+                                if(txtCodigoClienteFacturacion.textoInputBox!=""){ //Hay un cliente seleccionado
+
+                                    var listaPrecioSeleccionada
+                                    if(cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="" || cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="-1"){
+                                        listaPrecioSeleccionada=modeloListasPrecios.retornaListaPrecioDeCliente(txtFechaPrecioFacturacion.textoInputBox.trim(), txtCodigoClienteFacturacion.textoInputBox.trim(),txtTipoClienteFacturacion.codigoValorSeleccion.trim())
+                                    }else{
+                                        listaPrecioSeleccionada=cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion
+                                    }
+
+                                    var cantidadArticulos=1;
+
+
+                                    if(listaPrecioSeleccionada!=""){
+
+
+                                        var precioArticuloSelecionado=modeloListaPrecioArticulos.retornarPrecioDeArticuloEnBaseDeDatos(valorArticuloInterno,listaPrecioSeleccionada)
+
+                                        var cotizacion=1;
+                                        valorPrecioArticulo2=precioArticuloSelecionado
+
+                                        if(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)!=cbListaMonedasEnFacturacion.codigoValorSeleccion){
+
+                                            if(modeloListaMonedas.retornaMonedaReferenciaSistema()==modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)){
+                                                cotizacion=modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                                valorPrecioArticulo2=precioArticuloSelecionado/cotizacion
+                                            }else{
+
+                                                if(cbListaMonedasEnFacturacion.codigoValorSeleccion==modeloListaMonedas.retornaMonedaReferenciaSistema()){
+                                                    cotizacion=modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno))
+                                                    valorPrecioArticulo2=precioArticuloSelecionado*cotizacion
+                                                }else{
+                                                    valorPrecioArticulo2=(precioArticuloSelecionado*modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)))/modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                                }
+
+
+                                            }
+                                        }
+
+                                        if(txtCantidadArticulosFacturacion.visible){
+                                            if(txtCantidadArticulosFacturacion.textoInputBox.trim()!="" && txtCantidadArticulosFacturacion.textoInputBox.trim()!="0"){
+                                                cantidadArticulos=txtCantidadArticulosFacturacion.textoInputBox.trim()
+                                            }
+                                        }else{
+                                            cantidadArticulos=1;
+                                        }
+
+                                        codigoDeBarraArticulo=txtCodigoDeBarrasADemanda.textoInputBox.trim()
+
+                                        costoArticulo=txtCostoArticuloMonedaReferencia.textoInputBox.trim();
+                                        //costoArticuloMonedaReferencia:costoArticulo.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                        //txtCostoArticuloMonedaReferencia.textoInputBox="0"+modeloconfiguracion.retornaCantidadDecimalesString()+""
+
+                                        //Controlo si se peude vender sin stock previsto
+                                        if(modeloArticulos.retornaSiPuedeVenderSinStock(parseInt(cantidadArticulos),cbListatipoDocumentos.codigoValorSeleccion,valorArticuloInterno,retornaCantidadDeUnArticuloEnFacturacion(valorArticuloInterno)   )){
+
+
+                                        funcionesmysql.loguear("QML::modeloItemsFactura.append:")
+                                        funcionesmysql.loguear("QML::codigoArticulo: "+valorArticuloInterno)
+                                        funcionesmysql.loguear("QML::precioArticulo: "+valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")))
+                                        funcionesmysql.loguear("QML::cantidadItems: "+parseInt(cantidadArticulos))
+
+                                        modeloItemsFactura.append({
+                                                                      codigoArticulo:valorArticuloInterno,
+                                                                      codigoBarrasArticulo:codigoDeBarraArticulo,
+                                                                      descripcionArticulo:modeloArticulos.retornaDescripcionArticulo(valorArticuloInterno),
+                                                                      descripcionArticuloExtendido:modeloArticulos.retornaDescripcionArticuloExtendida(valorArticuloInterno),
+                                                                      precioArticulo:valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                                                      precioArticuloSubTotal:(valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))*parseInt(cantidadArticulos)).toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                                                      cantidadItems:parseInt(cantidadArticulos),
+                                                                      costoArticuloMonedaReferencia:costoArticulo.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                                                      activo:true,
+                                                                      consideraDescuento:false,
+                                                                      indiceLinea:-1,
+                                                                      descuentoLineaItem:0
+                                                                  })
+
+                                            listaDeItemsFactura.positionViewAtIndex(listaDeItemsFactura.count-1,0)
+
+
+                                        if(modoCalculoTotal=="1"){
+                                            etiquetaTotal.setearTotal((valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))*parseInt(cantidadArticulos)).toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),valorArticuloInterno,cbListatipoDocumentos.codigoValorSeleccion,false,listaDeItemsFactura.count-1)
+                                        }else if(modoCalculoTotal=="2"){
+                                            etiquetaTotal.setearTotalModoArticuloSinIva((valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))*parseInt(cantidadArticulos)).toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),valorArticuloInterno,cbListatipoDocumentos.codigoValorSeleccion,false,listaDeItemsFactura.count-1)
+                                        }
+
+                                        mostrarCuadroDeActulizacionDePrecioEnFacturacion(valorArticuloInterno,"")
+
+
+                                        txtCantidadArticulosFacturacion.textoInputBox=""
+                                        txtArticuloParaFacturacion.textoInputBox=""
+                                        txtPrecioItemManualFacturacion.textoInputBox=""
+                                        txtCodigoDeBarrasADemanda.textoInputBox=""
+                                        txtCostoArticuloMonedaReferencia.textoInputBox="0"+modeloconfiguracion.retornaCantidadDecimalesString()+""
+                                        txtArticuloParaFacturacion.tomarElFocoP()
+                                    }
+                                    }else{
+
+                                        var precioArticuloSelecionadoSinLista
+                                        if(cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="" || cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="-1"){
+                                            precioArticuloSelecionadoSinLista=modeloListaPrecioArticulos.retornarPrecioDeArticuloEnBaseDeDatos(valorArticuloInterno,1)
+                                        }else{
+                                            precioArticuloSelecionadoSinLista=modeloListaPrecioArticulos.retornarPrecioDeArticuloEnBaseDeDatos(valorArticuloInterno,cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion)
+                                        }
+
+
+
+                                        var cotizacion2=1;
+                                        valorPrecioArticulo2=precioArticuloSelecionadoSinLista
+
+                                        if(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)!=cbListaMonedasEnFacturacion.codigoValorSeleccion){
+
+                                            if(modeloListaMonedas.retornaMonedaReferenciaSistema()==modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)){
+                                                cotizacion2=modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                                valorPrecioArticulo2=precioArticuloSelecionadoSinLista/cotizacion2
+                                            }else{
+                                                if(cbListaMonedasEnFacturacion.codigoValorSeleccion==modeloListaMonedas.retornaMonedaReferenciaSistema()){
+                                                    cotizacion2=modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno))
+                                                    valorPrecioArticulo2=precioArticuloSelecionadoSinLista*cotizacion2
+                                                }else{
+                                                    valorPrecioArticulo2=(precioArticuloSelecionadoSinLista*modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)))/modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                                }
+                                            }
+                                        }
+
+                                        if(txtCantidadArticulosFacturacion.visible){
+                                            if(txtCantidadArticulosFacturacion.textoInputBox.trim()!="" && txtCantidadArticulosFacturacion.textoInputBox.trim()!="0"){
+                                                cantidadArticulos=txtCantidadArticulosFacturacion.textoInputBox.trim()
+                                            }
+                                        }else{
+                                            cantidadArticulos=1;
+                                        }
+
+                                        codigoDeBarraArticulo=txtCodigoDeBarrasADemanda.textoInputBox.trim()
+
+                                        costoArticulo=parseFloat(txtCostoArticuloMonedaReferencia.textoInputBox.trim());
+                                        //costoArticuloMonedaReferencia:costoArticulo.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                        //txtCostoArticuloMonedaReferencia.textoInputBox="0"+modeloconfiguracion.retornaCantidadDecimalesString()+""
+
+                                        //Controlo si se peude vender sin stock previsto
+                                        if(modeloArticulos.retornaSiPuedeVenderSinStock(parseInt(cantidadArticulos),cbListatipoDocumentos.codigoValorSeleccion,valorArticuloInterno,retornaCantidadDeUnArticuloEnFacturacion(valorArticuloInterno)   )){
+
+                                        funcionesmysql.loguear("QML::modeloItemsFactura.append:")
+                                        funcionesmysql.loguear("QML::codigoArticulo: "+valorArticuloInterno)
+                                        funcionesmysql.loguear("QML::precioArticulo: "+valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")))
+                                        funcionesmysql.loguear("QML::cantidadItems: "+parseInt(cantidadArticulos))
+
+                                        modeloItemsFactura.append({
+                                                                      codigoArticulo:valorArticuloInterno,
+                                                                      codigoBarrasArticulo:codigoDeBarraArticulo,
+                                                                      descripcionArticulo:modeloArticulos.retornaDescripcionArticulo(valorArticuloInterno),
+                                                                      descripcionArticuloExtendido:modeloArticulos.retornaDescripcionArticuloExtendida(valorArticuloInterno),
+                                                                      precioArticulo:valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                                                      precioArticuloSubTotal:(valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))*parseInt(cantidadArticulos)).toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                                                      cantidadItems:parseInt(cantidadArticulos),
+                                                                      costoArticuloMonedaReferencia:costoArticulo.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                                                      activo:true,
+                                                                      consideraDescuento:false,
+                                                                      indiceLinea:-1,
+                                                                      descuentoLineaItem:0
+                                                                  })
+
+                                            listaDeItemsFactura.positionViewAtIndex(listaDeItemsFactura.count-1,0)
+
+                                        if(modoCalculoTotal=="1"){
+                                            etiquetaTotal.setearTotal((valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))*parseInt(cantidadArticulos)).toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),valorArticuloInterno,cbListatipoDocumentos.codigoValorSeleccion,false,listaDeItemsFactura.count-1)
+                                        }else if(modoCalculoTotal=="2"){
+                                            etiquetaTotal.setearTotalModoArticuloSinIva((valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))*parseInt(cantidadArticulos)).toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),valorArticuloInterno,cbListatipoDocumentos.codigoValorSeleccion,false,listaDeItemsFactura.count-1)
+                                        }
+
+
+                                        mostrarCuadroDeActulizacionDePrecioEnFacturacion(valorArticuloInterno,"")
+
+                                        txtCantidadArticulosFacturacion.textoInputBox=""
+                                        txtArticuloParaFacturacion.textoInputBox=""
+                                        txtPrecioItemManualFacturacion.textoInputBox=""
+                                        txtCodigoDeBarrasADemanda.textoInputBox=""
+                                        txtCostoArticuloMonedaReferencia.textoInputBox="0"+modeloconfiguracion.retornaCantidadDecimalesString()+""
+                                        txtArticuloParaFacturacion.tomarElFocoP()
+                                    }
+                                    }
+
+                                }else{
+
+                                    var precioArticuloSelecionadoSinListaySinCliente
+                                    if(cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="" || cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion=="-1"){
+                                        precioArticuloSelecionadoSinListaySinCliente=modeloListaPrecioArticulos.retornarPrecioDeArticuloEnBaseDeDatos(valorArticuloInterno,1)
+                                    }else{
+                                        precioArticuloSelecionadoSinListaySinCliente=modeloListaPrecioArticulos.retornarPrecioDeArticuloEnBaseDeDatos(valorArticuloInterno,cbxListaPrecioManualFijadaPorUsuario.codigoValorSeleccion)
+                                    }
+
+
+
+                                    var cotizacion3=1;
+                                    valorPrecioArticulo2=precioArticuloSelecionadoSinListaySinCliente
+
+                                    if(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)!=cbListaMonedasEnFacturacion.codigoValorSeleccion){
+                                        if(modeloListaMonedas.retornaMonedaReferenciaSistema()==modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)){
+                                            cotizacion3=modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                            valorPrecioArticulo2=precioArticuloSelecionadoSinListaySinCliente/cotizacion3
+                                        }else{
+                                            if(cbListaMonedasEnFacturacion.codigoValorSeleccion==modeloListaMonedas.retornaMonedaReferenciaSistema()){
+                                                cotizacion3=modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno))
+                                                valorPrecioArticulo2=precioArticuloSelecionadoSinListaySinCliente*cotizacion3
+                                            }else{
+                                                valorPrecioArticulo2=(precioArticuloSelecionadoSinListaySinCliente*modeloListaMonedas.retornaCotizacionMoneda(modeloListaMonedas.retornaCodigoMoneda(valorArticuloInterno)))/modeloListaMonedas.retornaCotizacionMoneda(cbListaMonedasEnFacturacion.codigoValorSeleccion)
+                                            }
+
+                                        }
+                                    }
+
+
+                                    if(txtCantidadArticulosFacturacion.visible){
+                                        if(txtCantidadArticulosFacturacion.textoInputBox.trim()!="" && txtCantidadArticulosFacturacion.textoInputBox.trim()!="0"){
+                                            cantidadArticulos=txtCantidadArticulosFacturacion.textoInputBox.trim()
+                                        }
+                                    }else{
+                                        cantidadArticulos=1;
+                                    }
+
+
+
+                                    codigoDeBarraArticulo=txtCodigoDeBarrasADemanda.textoInputBox.trim()
+
+                                    costoArticulo=parseFloat(txtCostoArticuloMonedaReferencia.textoInputBox.trim());
+
+                                    //Controlo si se peude vender sin stock previsto
+                                    if(modeloArticulos.retornaSiPuedeVenderSinStock(parseInt(cantidadArticulos),cbListatipoDocumentos.codigoValorSeleccion,valorArticuloInterno,retornaCantidadDeUnArticuloEnFacturacion(valorArticuloInterno)   )){
+
+                                    funcionesmysql.loguear("QML::modeloItemsFactura.append:")
+                                    funcionesmysql.loguear("QML::codigoArticulo: "+valorArticuloInterno)
+                                    funcionesmysql.loguear("QML::precioArticulo: "+valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")))
+                                    funcionesmysql.loguear("QML::cantidadItems: "+parseInt(cantidadArticulos))
+
+
+                                    modeloItemsFactura.append({
+                                                                  codigoArticulo:valorArticuloInterno,
+                                                                  codigoBarrasArticulo:codigoDeBarraArticulo,
+                                                                  descripcionArticulo:modeloArticulos.retornaDescripcionArticulo(valorArticuloInterno),
+                                                                  descripcionArticuloExtendido:modeloArticulos.retornaDescripcionArticuloExtendida(valorArticuloInterno),
+                                                                  precioArticulo:valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                                                  precioArticuloSubTotal:(valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))*parseInt(cantidadArticulos)).toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                                                  cantidadItems:parseInt(cantidadArticulos),
+                                                                  costoArticuloMonedaReferencia:costoArticulo.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),
+                                                                  activo:true,
+                                                                  consideraDescuento:false,
+                                                                  indiceLinea:-1,
+                                                                  descuentoLineaItem:0
+                                                              })
+
+                                        listaDeItemsFactura.positionViewAtIndex(listaDeItemsFactura.count-1,0)
+
+                                    if(modoCalculoTotal=="1"){
+                                        etiquetaTotal.setearTotal((valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))*parseInt(cantidadArticulos)).toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),valorArticuloInterno,cbListatipoDocumentos.codigoValorSeleccion,false,listaDeItemsFactura.count-1)
+                                    }else if(modoCalculoTotal=="2"){
+                                        etiquetaTotal.setearTotalModoArticuloSinIva((valorPrecioArticulo2.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))*parseInt(cantidadArticulos)).toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),valorArticuloInterno,cbListatipoDocumentos.codigoValorSeleccion,false,listaDeItemsFactura.count-1)
+                                    }
+
+                                    mostrarCuadroDeActulizacionDePrecioEnFacturacion(valorArticuloInterno,"")
+
+                                    txtCantidadArticulosFacturacion.textoInputBox=""
+                                    txtArticuloParaFacturacion.textoInputBox=""
+                                    txtPrecioItemManualFacturacion.textoInputBox=""
+                                    txtCodigoDeBarrasADemanda.textoInputBox=""
+                                    txtCostoArticuloMonedaReferencia.textoInputBox="0"+modeloconfiguracion.retornaCantidadDecimalesString()+""
+                                    txtArticuloParaFacturacion.tomarElFocoP()
+                                }
+
+                                }
+
+                            }else{
+                                txtArticuloParaFacturacion.mensajeError("Artículo "+valorArticuloInterno+" incativo.")
+                                txtArticuloParaFacturacion.textoInputBox=""
+
+                                txtArticuloParaFacturacion.tomarElFocoP()
+                            }
+
+                        }else{
+                            txtArticuloParaFacturacion.tomarElFocoP()
+
+                        }
+                    }
+
+
+                    }
+
+
                 }
             }
 
