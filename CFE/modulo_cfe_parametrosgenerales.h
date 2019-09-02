@@ -67,9 +67,14 @@ public:
 
     Q_INVOKABLE QString retornaValor(QString ) const;
 
+
     Q_INVOKABLE bool cargarClavePublica() ;
+    Q_INVOKABLE bool cargarLogoImpresora();
 
     Q_INVOKABLE bool actualizarDatoParametroCFE(QString ,QString );
+
+    Q_INVOKABLE bool actualizarDatoParametroCFEImagen(QString ,QString );
+
 
 
 
@@ -96,6 +101,15 @@ public:
     static QString getclaveCifrada(){return m_claveCifrada;}
 
     static QString geturlDGI(){return m_urlDGI;}
+
+    static QString getlogoImpresoraTicket(){return m_logoImpresoraTicket;}
+
+    static QString getresolucionDGINro(){return m_resolucionDGINro;}
+
+
+
+
+
 
 
 
@@ -125,6 +139,9 @@ private:
     static QString m_envioArticuloClienteGenerico;
     static QString m_claveCifrada;
     static QString m_urlDGI;
+    static QString m_logoImpresoraTicket;
+    static QString m_resolucionDGINro;
+
 
 
 
@@ -151,6 +168,10 @@ private:
     static void setclaveCifrada(QString value){m_claveCifrada=value;}
 
     static void seturlDGI(QString value){m_urlDGI=value;}
+
+    static void setlogoImpresoraTicket(QString value){m_logoImpresoraTicket=value;}
+
+    static void setresolucionDGINro(QString value){m_resolucionDGINro=value;}
 
 
 

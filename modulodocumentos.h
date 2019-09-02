@@ -259,6 +259,9 @@ public:
 
     Q_INVOKABLE bool emitirDocumentoEnImpresora( QString , QString,QString);
 
+    Q_INVOKABLE bool emitirDocumentoEnImpresoraTicket(QString _codigoDocumento, QString _codigoTipoDocumento, QString _impresora, int cantidadDecimalesMonto);
+
+
     Q_INVOKABLE void buscarDocumentosEnMantenimiento(QString , QString, QString);
     Q_INVOKABLE void buscarDocumentosAPagarCuentaCorriente(QString , QString, QString);
     Q_INVOKABLE void buscarDocumentosDePagoCuentaCorriente(QString , QString, QString);

@@ -152,6 +152,34 @@ void ModuloGenericoCombobox::buscarTodosLosReportes(){
 }
 
 
+void ModuloGenericoCombobox::buscarTodosLosTiposPromocion(){
+    bool conexion=true;
+    Database::chequeaStatusAccesoMysql();
+    if(!Database::connect().isOpen()){
+        if(!Database::connect().open()){
+            qDebug() << "No conecto";
+            conexion=false;
+        }
+    }
+    if(conexion){
+
+        QSqlQuery q = Database::consultaSql("select idTipoPromocion,nombreTipoPromocion from TipoPromocion order by nombreTipoPromocion;");
+        QSqlRecord rec = q.record();
+
+        ModuloGenericoCombobox::reset();
+        if(q.record().count()>0){
+            while (q.next()){
+
+                ModuloGenericoCombobox::agregarModuloGenerico(ModuloGenerico( q.value(rec.indexOf("idTipoPromocion")).toString(),
+                                                                                 q.value(rec.indexOf("nombreTipoPromocion")).toString(),
+                                                                                 false,"","",""
+                                                                                 ));
+            }
+        }
+    }
+}
+
+
 int ModuloGenericoCombobox::rowCount(const QModelIndex & parent) const {
     return m_ModuloGenerico.count();
 }

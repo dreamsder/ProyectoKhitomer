@@ -62,16 +62,15 @@ Rectangle {
             anchors.topMargin: 10
 
 
-            ComboBoxListaTipoCliente {
-                id: txtTipoPromocion
-                width: 120
+
+            ComboBoxGenerico {
+                id: cbxTipoPromocion
+                width: 170
+                codigoValorSeleccion: "1"
+                textoComboBox: "Mail de cumpleaños"
                 botonBuscarTextoVisible: false
-                textoTitulo: "Tipo Promoción:"
-                onClicEnBusqueda: {
-                //    modeloDocumentosMantenimiento.limpiarListaDocumentos()
-                //    modeloDocumentosMantenimiento.buscarDocumentosEnMantenimiento("D.tipoCliente =",txtTipoClienteDocumento.codigoValorSeleccion,modeloListaPerfiles.retornaCodigoPerfil(txtNombreDeUsuario.textoInputBox.trim()))
-                //    listaDeDocumentosFiltrados.currentIndex=0
-                }
+                textoTitulo: qsTr("Tipo Promoción:")
+                modeloItems: moduloGenericoTipoPromocion
             }
 
 

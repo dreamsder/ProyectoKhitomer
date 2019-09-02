@@ -228,6 +228,9 @@ Rectangle {
         /// 1.14.7  :Corrección sobre descuentos para Dynamia. Cambiar el tipo_descuento de 2 a 1 para indicar por porcentaje.
         /// 1.14.8  :Se agrega soporte para fecha de nacimiento en el mantenimiento de clientes.
         ///         :Se agrega nuevo parametro de configuración CODIGO_BARRAS_A_DEMANDA_EXTENDIDO el cual permite ingresar muchos datos en el campo codigo de barras a demanda e intercambia el ENTER por tabulación.
+        /// 1.14.9  :Se realizo corrección de reporte "Saldo proveedor por moneda entre fechas".
+        /// 1.14.10 :Se realizo corrección sobre control de cantidad de articulos con stock previsto, cuando se da clic en el boton signo de mas de la lista de items al facturar.        
+
 
         Text {
             id: txtCopyright

@@ -76,6 +76,8 @@ public:
     Q_INVOKABLE void buscarTodosLosTipoDocumentos();
     Q_INVOKABLE void buscarTodosLosReportes();
 
+    Q_INVOKABLE void buscarTodosLosTiposPromocion();
+
 
     Q_INVOKABLE QString retornarCodigoItem(int) const;
     Q_INVOKABLE QString retornarDescripcionItem(int) const;

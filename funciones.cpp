@@ -1383,11 +1383,34 @@ bool Funciones::actualizacionBaseDeDatos(qlonglong _valor)const{
             }
             break;
 
+        case 274:
+            if(!impactoCambioEnBD("UPDATE `Reportes` SET `consultaSql`='select concat(CLI.codigoCliente,\\' - \\',(case when CLI.razonSocial=\\'\\' then CLI.nombreCliente else CLI.razonSocial end))\\'Proveedor\\', concat(TDOC.descripcionTipoDocumento,\\' (\\',DOC.serieDocumento,\\'-\\',DOC.codigoDocumento,\\')\\')\\'Documento\\',  DOC.fechaHoraGuardadoDocumentoSQL\\'Fecha Creacion Doc.\\',  case when DOC.codigoVendedorComisiona is null or DOC.codigoVendedorComisiona=\\'0\\' then \\'Sin Vendedor\\' else concat(USU.nombreUsuario,\\' \\',USU.apellidoUsuario)end \\'Vendedor\\',  MON.simboloMoneda\\'\\',  case when TDOC.afectaCuentaCorriente=1 then ROUND(DOC.precioTotalVenta,2) when TDOC.afectaCuentaCorriente=-1 then ROUND(DOC.precioTotalVenta*-1,2) else ROUND(0.00,2) end \\'Movimientos\\' from Documentos DOC    join TipoDocumento TDOC on TDOC.codigoTipoDocumento=DOC.codigoTipoDocumento    join Monedas MON on MON.codigoMoneda=DOC.codigoMonedaDocumento    join Clientes CLI on CLI.codigoCliente=DOC.codigoCliente   and CLI.tipoCliente=DOC.tipoCliente     left join Usuarios USU on USU.idUsuario=DOC.codigoVendedorComisiona   where DOC.tipoCliente=2   and DOC.codigoEstadoDocumento in (\\'E\\',\\'G\\')  and TDOC.afectaCuentaCorriente!=0   and DOC.codigoCliente=\\'@_codigoProveedor\\'   and MON.codigoMoneda=\\'@_codigoMonedaReporte\\'  and DOC.fechaEmisionDocumento between \\'@_desde\\' and \\'@_hasta\\' order by DOC.fechaHoraGuardadoDocumentoSQL asc ;' WHERE `codigoReporte`='45';","275")){
+                _iterador=false; return false;
+            }
+            break;
 
-            //
+        case 275:
+            if(!impactoCambioEnBD("ALTER TABLE `TipoDocumento` ADD COLUMN `imprimeEnFormatoTicket` CHAR(1) NOT NULL DEFAULT '0' AFTER `TipoTrasladoRemito`;","276")){
+                _iterador=false; return false;
+            }
+            break;
+        case 276:
+            if(!impactoCambioEnBD("REPLACE INTO `CFE_ParametrosGenerales` (`nombreParametro`, `valorParametro`, `descripcionParametro`) VALUES ('logoImpresoraTicket', '', 'Logo opcional para el cabezal de la imrpesora de ticket');","277")){
+                _iterador=false; return false;
+            }
+            break;
+        case 277:
+            if(!impactoCambioEnBD("ALTER TABLE `CFE_ParametrosGenerales` ADD COLUMN `imagen` longblob NOT NULL AFTER `descripcionParametro`;","278")){
+                _iterador=false; return false;
+            }
+            break;
+        case 278:
+            if(!impactoCambioEnBD("INSERT INTO `CFE_ParametrosGenerales` (`nombreParametro`, `valorParametro`, `descripcionParametro`) VALUES ('resolucionDGINro', 'Res. Nro 10194/2017', 'Codigo resolución DGI');","279")){
+                _iterador=false; return false;
+            }
+            break;
 
-
-
+//
 
 
 

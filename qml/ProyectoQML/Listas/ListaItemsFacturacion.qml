@@ -30,8 +30,8 @@ Rectangle{
 
     height: descripcionArticuloExtendido=="" ? 32 : 42
     width: parent.width
-   // height: 400
-   // width: 2500
+    // height: 400
+    // width: 2500
     color: "#e9e8e9"
 
     radius: 1
@@ -41,7 +41,7 @@ Rectangle{
     property double suma : 0
     property double resta : 0
 
-    property double precioArticuloParseado : 0.00    
+    property double precioArticuloParseado : 0.00
 
     property double descuentoLineaItem: 0.00
 
@@ -83,7 +83,7 @@ Rectangle{
         z: 1
         anchors.fill: parent
         hoverEnabled: activo
-       // visible: activo
+        // visible: activo
 
         onEntered: {
             if(activo){
@@ -99,7 +99,7 @@ Rectangle{
 
         }
 
-        onDoubleClicked: {            
+        onDoubleClicked: {
 
             if(txtItemCodigoArticuloBarrasFacturacion.width!=0){
                 if(lblEstadoDocumento.text.trim()=="Emitido" || lblEstadoDocumento.text.trim()=="Guardado" || lblEstadoDocumento.text.trim()=="Pendiente"){
@@ -234,7 +234,7 @@ Rectangle{
         clip: true
         smooth: true
         //anchors.top: parent.bottom
-       // anchors.topMargin: 2
+        // anchors.topMargin: 2
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
         font.bold: false
@@ -431,29 +431,36 @@ Rectangle{
             visible: activo
             onClicked: {
 
-                ///Chequeo que modo de calculo de total esta seteado
-                var modoCalculoTotal=modeloconfiguracion.retornaValorConfiguracion("MODO_CALCULOTOTAL");
 
-                suma=0
-
-                if(cantidadItems!=99999){
-                    suma=parseFloat(precioArticuloSubTotal)
-                    suma+=parseFloat(precioArticulo)
-
-                    precioArticuloParseado=precioArticulo
+                //Controlo si se peude vender sin stock previsto
+                if(modeloArticulos.retornaSiPuedeVenderSinStock(1,cbListatipoDocumentos.codigoValorSeleccion,codigoArticulo,retornaCantidadDeUnArticuloEnFacturacion(codigoArticulo)   )){
 
 
-                    if(modoCalculoTotal=="1"){
-                        etiquetaTotal.setearTotal(precioArticuloParseado.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),codigoArticulo,cbListatipoDocumentos.codigoValorSeleccion,consideraDescuento,index)
-                    }else if(modoCalculoTotal=="2"){
-                        etiquetaTotal.setearTotalModoArticuloSinIva(precioArticuloParseado.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),codigoArticulo,cbListatipoDocumentos.codigoValorSeleccion,consideraDescuento,index)
+                    ///Chequeo que modo de calculo de total esta seteado
+                    var modoCalculoTotal=modeloconfiguracion.retornaValorConfiguracion("MODO_CALCULOTOTAL");
+
+                    suma=0
+
+                    if(cantidadItems!=99999){
+                        suma=parseFloat(precioArticuloSubTotal)
+                        suma+=parseFloat(precioArticulo)
+
+                        precioArticuloParseado=precioArticulo
+
+
+                        if(modoCalculoTotal=="1"){
+                            etiquetaTotal.setearTotal(precioArticuloParseado.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),codigoArticulo,cbListatipoDocumentos.codigoValorSeleccion,consideraDescuento,index)
+                        }else if(modoCalculoTotal=="2"){
+                            etiquetaTotal.setearTotalModoArticuloSinIva(precioArticuloParseado.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO")),codigoArticulo,cbListatipoDocumentos.codigoValorSeleccion,consideraDescuento,index)
+                        }
+
+
+                        modeloItemsFactura.set(index,{"cantidadItems": cantidadItems+1})
+                        modeloItemsFactura.set(index,{"precioArticuloSubTotal": suma.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))})
                     }
 
 
-                    modeloItemsFactura.set(index,{"cantidadItems": cantidadItems+1})
-                    modeloItemsFactura.set(index,{"precioArticuloSubTotal": suma.toFixed(modeloconfiguracion.retornaValorConfiguracion("CANTIDAD_DIGITOS_DECIMALES_MONTO"))})
                 }
-
             }
         }
     }

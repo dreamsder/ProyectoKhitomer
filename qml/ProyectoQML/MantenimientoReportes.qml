@@ -120,6 +120,9 @@ Rectangle {
             consultaSqlPrevia=consultaSqlPrevia.replace("@_codigoCliente",txtCodigoClienteReporte.textoInputBox.trim())
             consultaSqlPreviaGrafica=consultaSqlPreviaGrafica.replace("@_codigoCliente",txtCodigoClienteReporte.textoInputBox.trim())
             consultaSqlPreviaCabezal=consultaSqlPreviaCabezal.replace("@_codigoCliente",txtCodigoClienteReporte.textoInputBox.trim())
+
+
+
         }
 
         while(consultaSqlPrevia.match("@_codigoProveedor")){

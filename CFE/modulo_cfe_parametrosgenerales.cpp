@@ -28,6 +28,9 @@ En caso contrario, consulte <http://www.gnu.org/licenses/>.
 #include <QDebug>
 #include <CFE/crearclavecifrada.h>
 #include <funciones.h>
+#include <QFile>
+#include <QByteArray>
+#include <QImage>
 
 Funciones funcionesMensaje;
 
@@ -53,6 +56,12 @@ QString Modulo_CFE_ParametrosGenerales::m_envioArticuloClienteGenerico;
 QString Modulo_CFE_ParametrosGenerales::m_claveCifrada;
 
 QString Modulo_CFE_ParametrosGenerales::m_urlDGI;
+QString Modulo_CFE_ParametrosGenerales::m_logoImpresoraTicket;
+
+QString Modulo_CFE_ParametrosGenerales::m_resolucionDGINro;
+
+
+
 
 CrearClaveCifrada func_cargarClave;
 
@@ -169,6 +178,8 @@ void Modulo_CFE_ParametrosGenerales::cargar(){
                 else if(q.value(rec.indexOf("nombreParametro")).toString()=="envioArticuloClienteGenerico"){Modulo_CFE_ParametrosGenerales::setenvioArticuloClienteGenerico(q.value(rec.indexOf("valorParametro")).toString());}
                 else if(q.value(rec.indexOf("nombreParametro")).toString()=="claveCifrada"){Modulo_CFE_ParametrosGenerales::setclaveCifrada(q.value(rec.indexOf("valorParametro")).toString());}
                 else if(q.value(rec.indexOf("nombreParametro")).toString()=="urlDGI"){Modulo_CFE_ParametrosGenerales::seturlDGI(q.value(rec.indexOf("valorParametro")).toString());}
+                else if(q.value(rec.indexOf("nombreParametro")).toString()=="logoImpresoraTicket"){Modulo_CFE_ParametrosGenerales::setlogoImpresoraTicket(q.value(rec.indexOf("imagen")).toString());}
+                else if(q.value(rec.indexOf("nombreParametro")).toString()=="resolucionDGINro"){Modulo_CFE_ParametrosGenerales::setresolucionDGINro(q.value(rec.indexOf("valorParametro")).toString());}
 
 
 
@@ -227,6 +238,11 @@ QString Modulo_CFE_ParametrosGenerales::retornaValor(QString _codigoConfiguracio
     else if(_codigoConfiguracion=="envioArticuloClienteGenerico"){return Modulo_CFE_ParametrosGenerales::getenvioArticuloClienteGenerico();}
     else if(_codigoConfiguracion=="claveCifrada"){return Modulo_CFE_ParametrosGenerales::getclaveCifrada();}
     else if(_codigoConfiguracion=="urlDGI"){return Modulo_CFE_ParametrosGenerales::geturlDGI();}
+    else if(_codigoConfiguracion=="logoImpresoraTicket"){return Modulo_CFE_ParametrosGenerales::getlogoImpresoraTicket();}
+
+    else if(_codigoConfiguracion=="resolucionDGINro"){return Modulo_CFE_ParametrosGenerales::getresolucionDGINro();}
+
+
 
 
 }
@@ -258,6 +274,39 @@ bool Modulo_CFE_ParametrosGenerales::cargarClavePublica() {
 }
 
 
+bool Modulo_CFE_ParametrosGenerales::cargarLogoImpresora() {
+
+    QString nombreArchivo = QFileDialog::getOpenFileName(NULL,"Cargar clave..",
+                                                              "/home/",
+                                                              "*.png");
+    if(nombreArchivo.trimmed()==""){
+        return false;
+    }else{
+
+
+        QFile* file = new QFile(nombreArchivo);
+        file->open(QIODevice::ReadOnly);
+        QByteArray image = file->readAll();
+
+        QString encoded = QString(image.toBase64());
+
+        if(encoded.trimmed()!=""){
+            if(actualizarDatoParametroCFEImagen(encoded,"logoImpresoraTicket")){
+                funcionesMensaje.mensajeAdvertenciaOk("Logo cargado correctamente en el sistema");
+                Modulo_CFE_ParametrosGenerales::setlogoImpresoraTicket(encoded);
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            funcionesMensaje.mensajeAdvertenciaOk("ATENCION:...\n\nHubo un error al cargar el logo, intente nuevamente.");
+            return false;
+        }
+    }
+}
+
+
+
 bool Modulo_CFE_ParametrosGenerales::actualizarDatoParametroCFE(QString _dato,QString _parametro){
 
     bool conexion=true;
@@ -281,6 +330,32 @@ bool Modulo_CFE_ParametrosGenerales::actualizarDatoParametroCFE(QString _dato,QS
         return false;
     }
 }
+
+
+bool Modulo_CFE_ParametrosGenerales::actualizarDatoParametroCFEImagen(QString _dato,QString _parametro){
+
+    bool conexion=true;
+    Database::chequeaStatusAccesoMysql();
+    if(!Database::connect().isOpen()){
+        if(!Database::connect().open()){
+            qDebug() << "No conecto";
+            conexion=false;
+        }
+    }
+    if(conexion){
+        QSqlQuery query(Database::connect());
+        if(query.exec("update CFE_ParametrosGenerales set imagen='"+_dato+"'  where nombreParametro='"+_parametro+"'")){
+            cargar();
+            return true;
+        }else{
+            return false;
+        }
+
+    }else{
+        return false;
+    }
+}
+
 
 
 

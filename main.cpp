@@ -73,7 +73,12 @@ En caso contrario, consulte <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <modulotipoprocedenciacliente.h>
 
+#include <modulotipopromocion.h>
+#include <modulopromociones.h>
+
+
 #include <CFE/modulo_cfe_parametrosgenerales.h>
+
 
 #include <QSqlQuery>
 #include <Utilidades/database.h>
@@ -226,6 +231,11 @@ int main(int argc, char *argv[])
     ControlesMantenimientos moduloControlesMantenimiento;
 
     MantenimientoBatch moduloMantenimientoBatch;
+
+    ModuloGenericoCombobox moduloGenericoTipoPromocion;
+    ModuloPromociones moduloPromociones;
+
+
     DialogosWidget dialogoQT;
 
 
@@ -440,7 +450,8 @@ inicio:
 
     viewer.rootContext()->setContextProperty("modeloTipoProcedenciaCliente", &moduloTipoProcedenciaCliente);
 
-
+    viewer.rootContext()->setContextProperty("moduloGenericoTipoPromocion", &moduloGenericoTipoPromocion);
+    viewer.rootContext()->setContextProperty("moduloPromociones", &moduloPromociones);
 
 
     viewer.rootContext()->setContextProperty("modeloDialogoQT", &dialogoQT);
@@ -512,6 +523,8 @@ inicio:
     moduloGenericoCombobox.buscarModuloGenerico();
     moduloGenericoComboboxTipoDocumento.buscarTodosLosTipoDocumentos();
     moduloGenericoComboboxReportesPermisos.buscarTodosLosReportes();
+
+    moduloGenericoTipoPromocion.buscarTodosLosTiposPromocion();
 
     moduloTipoProcedenciaCliente.buscar();
 

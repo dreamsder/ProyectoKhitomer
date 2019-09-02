@@ -2498,6 +2498,8 @@ Rectangle {
 
                 //if(modeloListaTipoDocumentosComboBox.retornaValorCampoTipoDocumento())
 
+
+                // control para saber si borrar los articulos de la lista de item de la factura al cambiar de documento
                 if(modeloListaTipoDocumentosComboBox.retornaValorCampoTipoDocumento(cbListatipoDocumentos.codigoValorSeleccion,"utilizaArticulos")=="1"  &&
                    modeloListaTipoDocumentosComboBox.retornaValorCampoTipoDocumento(cbListatipoDocumentos.codigoValorSeleccion,"utilizaTotales")=="1" &&
                    modeloListaTipoDocumentosComboBox.retornaValorCampoTipoDocumento(cbListatipoDocumentos.codigoValorSeleccion,"afectaTotales")==modeloListaTipoDocumentosComboBox.retornaValorCampoTipoDocumento(codigoTipoDocumentoUsadoAnteriormente,"afectaTotales") &&

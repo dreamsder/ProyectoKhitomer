@@ -105,7 +105,9 @@ SOURCES += main.cpp \
     modulotipodocumentocliente.cpp \
     modulotipoprocedenciacliente.cpp \
     CFE/modulo_cfe_parametrosgenerales.cpp \
-    json/json.cpp
+    json/json.cpp \
+    modulotipopromocion.cpp \
+    modulopromociones.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -171,7 +173,9 @@ HEADERS += \
     modulotipoprocedenciacliente.h \
     CFE/modulo_cfe_parametrosgenerales.h \
     json/json.h \
-    json/json.hpp
+    json/json.hpp \
+    modulotipopromocion.h \
+    modulopromociones.h
 
 RESOURCES += \
     Imagenes.qrc \
