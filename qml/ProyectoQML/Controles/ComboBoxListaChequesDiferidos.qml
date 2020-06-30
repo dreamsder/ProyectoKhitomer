@@ -297,7 +297,8 @@ Rectangle {
                                                                                 numeroLineaDocumento:numeroLinea,
                                                                                 numeroCuentaBancariaAgregado:_numeroCuentaBancaria,
                                                                                 numeroBancoCuentaBancaria:_codigoBancoCuentaBancaria,
-                                                                                activo:true
+                                                                                activo:true,
+                                                                                serieDoc:serieDocumento
 
                                                                             })
 
@@ -382,7 +383,9 @@ Rectangle {
                                                                                     numeroLineaDocumento:numeroLinea,
                                                                                     numeroCuentaBancariaAgregado:_numeroCuentaBancaria,
                                                                                     numeroBancoCuentaBancaria:_codigoBancoCuentaBancaria,
-                                                                                    activo:true
+                                                                                    activo:true,
+                                                                                    serieDoc:serieDocumento
+
 
                                                                                 })
 

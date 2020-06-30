@@ -289,7 +289,7 @@ QString ModuloCuentasBancarias::retornaTotalXMonedaCuentaBancaria(QString _numer
                       "case when (DLP.importePago*T.afectaTotales) is null then 0.00 else (DLP.importePago*T.afectaTotales) end "
                       "end),2)'Valor Total:'  "
                       "from DocumentosLineasPago DLP   "
-                      "join Documentos D on D.codigoDocumento=DLP.codigoDocumento and  D.codigoTipoDocumento=DLP.codigoTipoDocumento   "
+                      "join Documentos D on D.codigoDocumento=DLP.codigoDocumento and  D.codigoTipoDocumento=DLP.codigoTipoDocumento and D.serieDocumento=DLP.serieDocumento   "
                       "join TipoDocumento T on T.codigoTipoDocumento=D.codigoTipoDocumento  "
                       "join Monedas MON on MON.codigoMoneda=DLP.monedaMedioPago "
                       "join CuentaBancaria CB on CB.numeroCuentaBancaria=DLP.numeroCuentaBancaria and CB.codigoBanco=DLP.codigoBancoCuentaBancaria "

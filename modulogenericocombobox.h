@@ -28,7 +28,10 @@ class ModuloGenerico
 {
 public:
    Q_INVOKABLE ModuloGenerico(const QString &codigoItem, const QString &descripcionItem, const bool &checkBoxActivo
-                              , const QString &codigoTipoItem ,const QString &valorItem, const QString &descripcionItemSegundafila);
+                              , const QString &codigoTipoItem ,const QString &valorItem, const QString &descripcionItemSegundafila
+
+                              , const QString &serieDoc
+                              );
 
     QString codigoItem() const;
     QString descripcionItem() const;
@@ -38,6 +41,8 @@ public:
     QString valorItem() const;
     QString descripcionItemSegundafila() const;
 
+    QString serieDoc() const;
+
 
 private:
     QString m_codigoItem;
@@ -46,6 +51,7 @@ private:
     QString m_codigoTipoItem;
     QString m_valorItem;
     QString m_descripcionItemSegundafila;
+    QString m_serieDoc;
 };
 
 class ModuloGenericoCombobox : public QAbstractListModel
@@ -58,7 +64,8 @@ public:
         checkBoxActivoRole,
         codigoTipoItemRole,
         valorItemRole,
-        descripcionItemSegundafilaRole
+        descripcionItemSegundafilaRole,
+        serieDocRole
     };
 
     ModuloGenericoCombobox(QObject *parent = 0);
@@ -80,6 +87,7 @@ public:
 
 
     Q_INVOKABLE QString retornarCodigoItem(int) const;
+    Q_INVOKABLE QString retornarSerieDoc(int) const;
     Q_INVOKABLE QString retornarDescripcionItem(int) const;
     Q_INVOKABLE bool retornarCheckBoxActivo(int) const;
 

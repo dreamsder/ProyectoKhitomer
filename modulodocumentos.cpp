@@ -72,22 +72,23 @@ QRectF cuadroA4(double x, double y, double ancho, double alto, bool justifica);
 
 double centimetro;
 
-QString crearJsonIMIX(QString, QString);
+QString crearJsonIMIX(QString, QString, QString _serieDocumento);
 
-QString crearJsonDynamia(QString, QString, QString , QString , QString );
+QString crearJsonDynamia(QString, QString, QString , QString , QString , QString _serieDocumento);
 
 QRectF cuadroTicketRight(double x, double y, double ancho, double alto, QString dato);
 
 
 
 
-bool procesarImix(QString, QString);
+bool procesarImix(QString, QString, QString _serieDocumento);
 
-bool procesarDynamia(QString, QString, QString, QString, QString );
+bool procesarDynamia(QString, QString, QString, QString, QString, QString _serieDocumento );
 
 
 QString numeroDocumentoV="";
 QString codigoTipoDocumentoV="";
+QString serieDocumentoV="";
 
 
 QString tipoDeCFEAEnviarDynamiaV="";
@@ -104,7 +105,7 @@ QPainter painter;
 QFont fuente("Arial");
 
 
-bool ModuloDocumentos::actualizarNumeroCFEDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _numeroCae) const{
+bool ModuloDocumentos::actualizarNumeroCFEDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _numeroCae, QString _serieDocumento) const{
 
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
@@ -118,7 +119,7 @@ bool ModuloDocumentos::actualizarNumeroCFEDocumento(QString _codigoDocumento,QSt
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("update Documentos set cae_numeroCae='"+_numeroCae+"' where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+        if(query.exec("update Documentos set cae_numeroCae='"+_numeroCae+"' where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")){
 
             return true;
 
@@ -162,7 +163,7 @@ static int writer(char *data, size_t size, size_t nmemb, std::string *buffer_in)
                 }else{
                     QString numeroCae= xs.readElementText();
 
-                    if(miDocumento.actualizarNumeroCFEDocumento(numeroDocumentoV,codigoTipoDocumentoV,numeroCae)){
+                    if(miDocumento.actualizarNumeroCFEDocumento(numeroDocumentoV,codigoTipoDocumentoV,numeroCae, serieDocumentoV)){
                         funcion.loguear("Respuesta Imix:\nNúmero CFE OK: "+numeroCae);
 
                         return size * nmemb;
@@ -446,6 +447,9 @@ qulonglong ModuloDocumentos::retornaCodigoDocumentoPorIndice(int indice) const{
 }
 int ModuloDocumentos::retornaCodigoTipoDocumentoPorIndice(int indice) const{
     return m_Documentos[indice].codigoTipoDocumento();
+}
+QString ModuloDocumentos::retornaSerieDocumentoPorIndice(int indice) const{
+    return m_Documentos[indice].serieDocumento();
 }
 QString ModuloDocumentos::retornaTotalDocumentoPorIndice(int indice) const{
     return m_Documentos[indice].precioTotalVenta();
@@ -956,7 +960,7 @@ QVariant ModuloDocumentos::data(const QModelIndex & index, int role) const {
 }
 
 
-bool ModuloDocumentos::eliminarDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{
+bool ModuloDocumentos::eliminarDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{
 
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
@@ -972,13 +976,13 @@ bool ModuloDocumentos::eliminarDocumento(QString _codigoDocumento,QString _codig
         QSqlQuery query(Database::connect());
 
         // Elimina las lineas de articulo del documento
-        if(eliminarLineaDocumento(_codigoDocumento,_codigoTipoDocumento)){
+        if(eliminarLineaDocumento(_codigoDocumento,_codigoTipoDocumento,_serieDocumento)){
 
             // Elimina las lineas de medio de pago del documento
-            if(func_medioDePago.eliminarLineaMedioDePagoDocumento(_codigoDocumento,_codigoTipoDocumento)){
+            if(func_medioDePago.eliminarLineaMedioDePagoDocumento(_codigoDocumento,_codigoTipoDocumento,_serieDocumento)){
 
                 // Elimina el documento.
-                if(query.exec("delete from Documentos where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+                if(query.exec("delete from Documentos where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")){
 
                     return true;
 
@@ -996,7 +1000,7 @@ bool ModuloDocumentos::eliminarDocumento(QString _codigoDocumento,QString _codig
     }
 }
 
-bool ModuloDocumentos::eliminarLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{
+bool ModuloDocumentos::eliminarLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{
 
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
@@ -1011,7 +1015,7 @@ bool ModuloDocumentos::eliminarLineaDocumento(QString _codigoDocumento,QString _
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("delete from DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+        if(query.exec("delete from DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")){
 
             return true;
 
@@ -1024,7 +1028,7 @@ bool ModuloDocumentos::eliminarLineaDocumento(QString _codigoDocumento,QString _
 }
 
 
-bool ModuloDocumentos::actualizarDatoExtraLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _numeroLinea, QString _datoAModificar) const{
+bool ModuloDocumentos::actualizarDatoExtraLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _numeroLinea, QString _datoAModificar, QString _serieDocumento) const{
 
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
@@ -1039,7 +1043,7 @@ bool ModuloDocumentos::actualizarDatoExtraLineaDocumento(QString _codigoDocument
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("update DocumentosLineas set codigoArticuloBarras='"+_datoAModificar+"' where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_numeroLinea+"'")){
+        if(query.exec("update DocumentosLineas set codigoArticuloBarras='"+_datoAModificar+"' where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_numeroLinea+"' and serieDocumento='"+_serieDocumento+"'   ")){
 
             return true;
 
@@ -1123,7 +1127,7 @@ int ModuloDocumentos::guardarDocumentos(QString _codigoDocumento,QString _codigo
 
         if(_estadoFinalDocumento=="EMITIR"){
 
-            if(query.exec("select codigoDocumento,codigoEstadoDocumento from Documentos where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {
+            if(query.exec("select codigoDocumento,codigoEstadoDocumento from Documentos where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")) {
 
                 if(query.first()){
                     if(query.value(0).toString()!=""){
@@ -1139,7 +1143,7 @@ int ModuloDocumentos::guardarDocumentos(QString _codigoDocumento,QString _codigo
                         }else if(query.value(1).toString()=="P"){
                             if(funcion.mensajeAdvertencia("El documento ya existe guardado en estado pendiente.\nDesea guardarlo como finalizado?\n\nPresione [ Sí ] para confirmar.")){
 
-                                if(query.exec("update Documentos set codigoEstadoDocumento='A',  codigoMonedaDocumento='"+_codigoMonedaDocumento+"',fechaUltimaModificacionDocumento='"+funcion.fechaHoraDeHoy()+"', fechaEmisionDocumento='"+_fechaEmisionDocumento+"',usuarioUltimaModificacion='"+_usuarioAlta+"',precioTotalVenta='"+_precioTotalVenta+"',precioSubTotalVenta='"+_precioSubTotalVenta+"',precioSubTotalVentaSinDescuento='"+_precioSubTotalSinDescuento+"'     ,precioIvaVenta='"+_precioIvaVenta+"',codigoLiquidacion='"+_codigoLiquidacion+"',codigoVendedorComisiona='"+_codigoVendedorComisiona+"', codigoVendedorLiquidacion='"+_codigoVendedorLiquidacion+"', totalIva1='"+_totalIva1+"', totalIva2='"+_totalIva2+"', totalIva3='"+_totalIva3+"',cotizacionMoneda='"+_cotizacionMoneda+"',observaciones='"+_observaciones+"',numeroCuentaBancaria='"+_numeroCuentaBancaria+"',codigoBanco='"+QString::number(_codigoBancoCuentaBancaria)+"', montoDescuentoTotal='"+_montoDescuentoTotal+"',tieneDescuentoAlTotal='"+_tieneDescuentoAlTotal+"',saldoClienteCuentaCorriente='"+_precioTotalVenta+"',formaDePago='"+_formaDePago+"',porcentajeDescuentoAlTotal='"+_porcentajeDescuentoAlTotal+"',saldoClientePagoContado='"+_saldoClientePagoContado+"',esDocumentoCFE='"+esUnDocumentoDeCFE+"'          where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' ")){
+                                if(query.exec("update Documentos set codigoEstadoDocumento='A',  codigoMonedaDocumento='"+_codigoMonedaDocumento+"',fechaUltimaModificacionDocumento='"+funcion.fechaHoraDeHoy()+"', fechaEmisionDocumento='"+_fechaEmisionDocumento+"',usuarioUltimaModificacion='"+_usuarioAlta+"',precioTotalVenta='"+_precioTotalVenta+"',precioSubTotalVenta='"+_precioSubTotalVenta+"',precioSubTotalVentaSinDescuento='"+_precioSubTotalSinDescuento+"'     ,precioIvaVenta='"+_precioIvaVenta+"',codigoLiquidacion='"+_codigoLiquidacion+"',codigoVendedorComisiona='"+_codigoVendedorComisiona+"', codigoVendedorLiquidacion='"+_codigoVendedorLiquidacion+"', totalIva1='"+_totalIva1+"', totalIva2='"+_totalIva2+"', totalIva3='"+_totalIva3+"',cotizacionMoneda='"+_cotizacionMoneda+"',observaciones='"+_observaciones+"',numeroCuentaBancaria='"+_numeroCuentaBancaria+"',codigoBanco='"+QString::number(_codigoBancoCuentaBancaria)+"', montoDescuentoTotal='"+_montoDescuentoTotal+"',tieneDescuentoAlTotal='"+_tieneDescuentoAlTotal+"',saldoClienteCuentaCorriente='"+_precioTotalVenta+"',formaDePago='"+_formaDePago+"',porcentajeDescuentoAlTotal='"+_porcentajeDescuentoAlTotal+"',saldoClientePagoContado='"+_saldoClientePagoContado+"',esDocumentoCFE='"+esUnDocumentoDeCFE+"'          where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"' ")){
                                     return 1;
                                 }else{
                                     funcion.mensajeAdvertencia(query.lastError().text());
@@ -1166,7 +1170,7 @@ int ModuloDocumentos::guardarDocumentos(QString _codigoDocumento,QString _codigo
                 return -4;
             }
         }else if(_estadoFinalDocumento=="PENDIENTE"){
-            if(query.exec("select codigoDocumento,codigoEstadoDocumento from Documentos where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {
+            if(query.exec("select codigoDocumento,codigoEstadoDocumento from Documentos where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")) {
 
                 if(query.first()){
                     if(query.value(0).toString()!=""){
@@ -1182,7 +1186,7 @@ int ModuloDocumentos::guardarDocumentos(QString _codigoDocumento,QString _codigo
                         }else if(query.value(1).toString()=="P"){
                             if(funcion.mensajeAdvertencia("El documento ya existe guardado en estado pendiente.\nDesea actualizarlo?\n\nPresione [ Sí ] para confirmar.")){
 
-                                if(query.exec("update Documentos set codigoMonedaDocumento='"+_codigoMonedaDocumento+"',fechaUltimaModificacionDocumento='"+funcion.fechaHoraDeHoy()+"', fechaEmisionDocumento='"+_fechaEmisionDocumento+"',usuarioUltimaModificacion='"+_usuarioAlta+"',precioTotalVenta='"+_precioTotalVenta+"',precioSubTotalVenta='"+_precioSubTotalVenta+"',precioSubTotalVentaSinDescuento='"+_precioSubTotalSinDescuento+"'  ,precioIvaVenta='"+_precioIvaVenta+"',codigoLiquidacion='"+_codigoLiquidacion+"',codigoVendedorComisiona='"+_codigoVendedorComisiona+"',codigoVendedorLiquidacion='"+_codigoVendedorLiquidacion+"', totalIva1='"+_totalIva1+"', totalIva2='"+_totalIva2+"', totalIva3='"+_totalIva3+"',cotizacionMoneda='"+_cotizacionMoneda+"',observaciones='"+_observaciones+"',numeroCuentaBancaria='"+_numeroCuentaBancaria+"',codigoBanco='"+QString::number(_codigoBancoCuentaBancaria)+"', montoDescuentoTotal="+_montoDescuentoTotal+",tieneDescuentoAlTotal='"+_tieneDescuentoAlTotal+"',saldoClienteCuentaCorriente='"+_precioTotalVenta+"',formaDePago='"+_formaDePago+"',porcentajeDescuentoAlTotal='"+_porcentajeDescuentoAlTotal+"',saldoClientePagoContado='"+_saldoClientePagoContado+"'    where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+                                if(query.exec("update Documentos set codigoMonedaDocumento='"+_codigoMonedaDocumento+"',fechaUltimaModificacionDocumento='"+funcion.fechaHoraDeHoy()+"', fechaEmisionDocumento='"+_fechaEmisionDocumento+"',usuarioUltimaModificacion='"+_usuarioAlta+"',precioTotalVenta='"+_precioTotalVenta+"',precioSubTotalVenta='"+_precioSubTotalVenta+"',precioSubTotalVentaSinDescuento='"+_precioSubTotalSinDescuento+"'  ,precioIvaVenta='"+_precioIvaVenta+"',codigoLiquidacion='"+_codigoLiquidacion+"',codigoVendedorComisiona='"+_codigoVendedorComisiona+"',codigoVendedorLiquidacion='"+_codigoVendedorLiquidacion+"', totalIva1='"+_totalIva1+"', totalIva2='"+_totalIva2+"', totalIva3='"+_totalIva3+"',cotizacionMoneda='"+_cotizacionMoneda+"',observaciones='"+_observaciones+"',numeroCuentaBancaria='"+_numeroCuentaBancaria+"',codigoBanco='"+QString::number(_codigoBancoCuentaBancaria)+"', montoDescuentoTotal="+_montoDescuentoTotal+",tieneDescuentoAlTotal='"+_tieneDescuentoAlTotal+"',saldoClienteCuentaCorriente='"+_precioTotalVenta+"',formaDePago='"+_formaDePago+"',porcentajeDescuentoAlTotal='"+_porcentajeDescuentoAlTotal+"',saldoClientePagoContado='"+_saldoClientePagoContado+"'    where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")){
                                     return 1;
                                 }else{
                                     funcion.mensajeAdvertencia(query.lastError().text());
@@ -1240,7 +1244,7 @@ bool ModuloDocumentos::guardarLineaDocumento(QString _consultaInsertLineas) cons
 }
 
 
-bool ModuloDocumentos::anuloMontosDebitadosCuentaCorriente(QString _codigoDocumentoDePago, QString _codigoTipoDocumentoDePago) const {
+bool ModuloDocumentos::anuloMontosDebitadosCuentaCorriente(QString _codigoDocumentoDePago, QString _codigoTipoDocumentoDePago, QString _serieDocumentoQueCancela) const {
 
     bool actualizacionCorrecta=true;
 
@@ -1255,14 +1259,14 @@ bool ModuloDocumentos::anuloMontosDebitadosCuentaCorriente(QString _codigoDocume
     if(conexion){
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT  codigoDocumento,codigoTipoDocumento,montoDescontadoCuentaCorriente   FROM DocumentosCanceladosCuentaCorriente where codigoDocumentoQueCancela='"+_codigoDocumentoDePago+"' and codigoTipoDocumentoQueCancela='"+_codigoTipoDocumentoDePago+"'")) {
+        if(query.exec("SELECT  codigoDocumento,codigoTipoDocumento,montoDescontadoCuentaCorriente,serieDocumento   FROM DocumentosCanceladosCuentaCorriente where codigoDocumentoQueCancela='"+_codigoDocumentoDePago+"' and codigoTipoDocumentoQueCancela='"+_codigoTipoDocumentoDePago+"' and serieDocumentoQueCancela='"+_serieDocumentoQueCancela+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=""){
 
                     query.previous();
                     while (query.next()){
 
-                        if(restauroMontoDeudaCuentaCorrienteDocumento(query.value(0).toString(),query.value(1).toString(),query.value(2).toString())==false){
+                        if(restauroMontoDeudaCuentaCorrienteDocumento(query.value(0).toString(),query.value(1).toString(),query.value(2).toString(),query.value(3).toString())==false){
                             actualizacionCorrecta==false;
                             break;
                         }
@@ -1283,7 +1287,7 @@ bool ModuloDocumentos::anuloMontosDebitadosCuentaCorriente(QString _codigoDocume
 
 }
 
-bool ModuloDocumentos::restauroMontoDeudaCuentaCorrienteDocumento(QString _codigoDocumentoAPagar, QString _codigoTipoDocumentoAPagar,QString _montoADebitar) const {
+bool ModuloDocumentos::restauroMontoDeudaCuentaCorrienteDocumento(QString _codigoDocumentoAPagar, QString _codigoTipoDocumentoAPagar,QString _montoADebitar, QString _serieDocumento) const {
 
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
@@ -1298,7 +1302,7 @@ bool ModuloDocumentos::restauroMontoDeudaCuentaCorrienteDocumento(QString _codig
         QSqlQuery query(Database::connect());
 
         ///Actualizo el documento de venta(factura credito, ajuste cuenta corriente +)
-        if(query.exec("update Documentos set saldoClienteCuentaCorriente=saldoClienteCuentaCorriente+"+_montoADebitar+" where codigoDocumento="+_codigoDocumentoAPagar+" and codigoTipoDocumento="+_codigoTipoDocumentoAPagar+"")){
+        if(query.exec("update Documentos set saldoClienteCuentaCorriente=saldoClienteCuentaCorriente+"+_montoADebitar+" where codigoDocumento="+_codigoDocumentoAPagar+" and codigoTipoDocumento="+_codigoTipoDocumentoAPagar+" and serieDocumento='"+_serieDocumento+"'  ")){
             return true;
         }else{
             qDebug()<< query.lastError();
@@ -1312,7 +1316,8 @@ bool ModuloDocumentos::restauroMontoDeudaCuentaCorrienteDocumento(QString _codig
 
 int ModuloDocumentos::actualizarCuentaCorriente(QString _codigoDocumentoAPagar, QString _codigoTipoDocumentoAPagar, QString _codigoClienteAPagar, QString _codigoTipoClienteAPagar, QString _codigoMonedaAPagar
                                                 ,QString _codigoDocumentoDePago, QString _codigoTipoDocumentoDePago, QString _codigoClienteDePago, QString _codigoTipoClienteDePago, QString _codigoMonedaDePago,
-                                                QString _montoADebitar,QString _montoDelSaldo
+                                                QString _montoADebitar,QString _montoDelSaldo,
+                                                QString _serieDocumentoAPagar, QString _serieDocumentoDePago
                                                 ) const {
     /// -5 Atencion, error al actualizar el documento de pago, y no se pudo restaurar el documento original, esto provoca incongruencias en el sistema
     /// -4 Datos no concuerdan para realizar la actualización
@@ -1345,32 +1350,50 @@ int ModuloDocumentos::actualizarCuentaCorriente(QString _codigoDocumentoAPagar, 
         QSqlQuery query(Database::connect());
 
         ///Actualizo el documento de venta(factura credito, ajuste cuenta corriente +)
-        if(query.exec("update Documentos set saldoClienteCuentaCorriente=saldoClienteCuentaCorriente-"+_montoADebitar+" where codigoDocumento="+_codigoDocumentoAPagar+" and codigoTipoDocumento="+_codigoTipoDocumentoAPagar+" and codigoCliente='"+_codigoClienteAPagar+"' and tipoCliente="+_codigoTipoClienteAPagar+" and codigoMonedaDocumento="+_codigoMonedaAPagar+"")){
+        if(query.exec("update Documentos set saldoClienteCuentaCorriente=saldoClienteCuentaCorriente-"+_montoADebitar+" where codigoDocumento="+_codigoDocumentoAPagar+" and codigoTipoDocumento="+_codigoTipoDocumentoAPagar+"  and serieDocumento='"+_serieDocumentoAPagar+"'   and codigoCliente='"+_codigoClienteAPagar+"' and tipoCliente="+_codigoTipoClienteAPagar+" and codigoMonedaDocumento="+_codigoMonedaAPagar+"")){                        
+            qDebug() << query.lastQuery();
+            qDebug() << "1";
             query.clear();
             ///Actualizo el documento de pago(recibo, nota de credito, ajuste cuenta corriente -)
-            if(query.exec("update Documentos set saldoClienteCuentaCorriente=saldoClienteCuentaCorriente-"+_montoADebitar+" where codigoDocumento="+_codigoDocumentoDePago+" and codigoTipoDocumento="+_codigoTipoDocumentoDePago+" and codigoCliente='"+_codigoClienteDePago+"' and tipoCliente="+_codigoTipoClienteDePago+" and codigoMonedaDocumento="+_codigoMonedaDePago+"")){
-
+            if(query.exec("update Documentos set saldoClienteCuentaCorriente=saldoClienteCuentaCorriente-"+_montoADebitar+" where codigoDocumento="+_codigoDocumentoDePago+" and codigoTipoDocumento="+_codigoTipoDocumentoDePago+" and serieDocumento='"+_serieDocumentoDePago+"'   and codigoCliente='"+_codigoClienteDePago+"' and tipoCliente="+_codigoTipoClienteDePago+" and codigoMonedaDocumento="+_codigoMonedaDePago+"")){
+                qDebug() << query.lastQuery();
+                qDebug() << "2";
                 query.clear();
                 ///Inserto las referencias de pago en la base de datos
-                if(query.exec("insert into DocumentosCanceladosCuentaCorriente(codigoDocumento,codigoTipoDocumento,codigoDocumentoQueCancela,codigoTipoDocumentoQueCancela,montoDescontadoCuentaCorriente)values('"+_codigoDocumentoAPagar+"','"+_codigoTipoDocumentoAPagar+"','"+_codigoDocumentoDePago+"','"+_codigoTipoDocumentoDePago+"',"+_montoADebitar+");")){
+                if(query.exec("insert into DocumentosCanceladosCuentaCorriente(codigoDocumento,codigoTipoDocumento,serieDocumento ,codigoDocumentoQueCancela,codigoTipoDocumentoQueCancela,serieDocumentoQueCancela,montoDescontadoCuentaCorriente)values('"+_codigoDocumentoAPagar+"','"+_codigoTipoDocumentoAPagar+"','"+_serieDocumentoAPagar+"','"+_codigoDocumentoDePago+"','"+_codigoTipoDocumentoDePago+"','"+_serieDocumentoDePago+"',"+_montoADebitar+");")){
+                    funcion.loguear("Inserto DocumentosCanceladosCuentaCorriente: "+query.lastQuery());
+                    qDebug() << query.lastQuery();
+                    qDebug() << "3";
                     return 1;
                 }else{
+                    qDebug()<< "Insert";
                     qDebug()<< query.lastError();
                     funcion.mensajeAdvertencia(query.lastError().text());
                     funcion.mensajeAdvertencia(query.lastQuery());
                     return -5;
                 }
             }else{
+
+                funcion.mensajeAdvertencia(query.lastQuery());
                 qDebug()<< query.lastError();
                 query.clear();
-                if(query.exec("update Documentos set saldoClienteCuentaCorriente="+_montoDelSaldo+" where codigoDocumento="+_codigoDocumentoAPagar+" and codigoTipoDocumento="+_codigoTipoDocumentoAPagar+" and codigoCliente='"+_codigoClienteAPagar+"' and tipoCliente="+_codigoTipoClienteAPagar+" and codigoMonedaDocumento="+_codigoMonedaAPagar+"")){
+                if(query.exec("update Documentos set saldoClienteCuentaCorriente="+_montoDelSaldo+" where codigoDocumento="+_codigoDocumentoAPagar+" and codigoTipoDocumento="+_codigoTipoDocumentoAPagar+" and serieDocumento='"+_serieDocumentoAPagar+"' and codigoCliente='"+_codigoClienteAPagar+"' and tipoCliente="+_codigoTipoClienteAPagar+" and codigoMonedaDocumento="+_codigoMonedaAPagar+";")){
+                    qDebug()<< "update 1";
+                    qDebug()<< query.lastError();                 
                     return -2;
                 }else{
+                    qDebug()<< "update 2";
+                    qDebug()<< query.lastError();
+                    funcion.mensajeAdvertencia(query.lastError().text());
+                    funcion.mensajeAdvertencia(query.lastQuery());
                     return -5;
                 }
             }
         }else{
+            qDebug()<< "update 3";
             qDebug()<< query.lastError();
+            funcion.mensajeAdvertencia(query.lastError().text());
+            funcion.mensajeAdvertencia(query.lastQuery());
             return -1;
         }
     }else{
@@ -1379,7 +1402,7 @@ int ModuloDocumentos::actualizarCuentaCorriente(QString _codigoDocumentoAPagar, 
     }
 }
 
-bool ModuloDocumentos::actualizoEstadoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _estadoDocumento ,QString _usuarioAlta) const {
+bool ModuloDocumentos::actualizoEstadoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _estadoDocumento ,QString _usuarioAlta, QString _serieDocumento   ) const {
 
 
     if(_codigoDocumento.trimmed()=="" || _codigoTipoDocumento.trimmed()=="" ){
@@ -1397,7 +1420,7 @@ bool ModuloDocumentos::actualizoEstadoDocumento(QString _codigoDocumento,QString
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("update Documentos set codigoEstadoDocumento='"+_estadoDocumento+"' ,usuarioUltimaModificacion='"+_usuarioAlta+"' where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+        if(query.exec("update Documentos set codigoEstadoDocumento='"+_estadoDocumento+"' ,usuarioUltimaModificacion='"+_usuarioAlta+"' where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")){
             return true;
         }else{
             return false;
@@ -1408,7 +1431,7 @@ bool ModuloDocumentos::actualizoEstadoDocumento(QString _codigoDocumento,QString
 }
 
 
-bool ModuloDocumentos::actualizoEstadoDocumentoCFE(QString _codigoDocumento,QString _codigoTipoDocumento, QString _estadoDocumento) const {
+bool ModuloDocumentos::actualizoEstadoDocumentoCFE(QString _codigoDocumento,QString _codigoTipoDocumento, QString _estadoDocumento, QString _serieDocumento) const {
 
 
     if(_codigoDocumento.trimmed()=="" || _codigoTipoDocumento.trimmed()=="" ){
@@ -1426,7 +1449,7 @@ bool ModuloDocumentos::actualizoEstadoDocumentoCFE(QString _codigoDocumento,QStr
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("update Documentos set codigoEstadoDocumento='"+_estadoDocumento+"'  where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+        if(query.exec("update Documentos set codigoEstadoDocumento='"+_estadoDocumento+"'  where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")){
             return true;
         }else{
             return false;
@@ -1437,7 +1460,7 @@ bool ModuloDocumentos::actualizoEstadoDocumentoCFE(QString _codigoDocumento,QStr
 }
 
 
-bool ModuloDocumentos::actualizoSaldoClientePagoContadoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _saldoClientePagoContado) const {
+bool ModuloDocumentos::actualizoSaldoClientePagoContadoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _saldoClientePagoContado, QString _serieDocumento) const {
 
 
     if(_codigoDocumento.trimmed()=="" || _codigoTipoDocumento.trimmed()=="" ){
@@ -1454,7 +1477,7 @@ bool ModuloDocumentos::actualizoSaldoClientePagoContadoDocumento(QString _codigo
     if(conexion){
 
         QSqlQuery query(Database::connect());
-        if(query.exec("update Documentos set saldoClientePagoContado='"+_saldoClientePagoContado+"'  where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+        if(query.exec("update Documentos set saldoClientePagoContado='"+_saldoClientePagoContado+"'  where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")){
             return true;
         }else{
             return false;
@@ -1464,7 +1487,7 @@ bool ModuloDocumentos::actualizoSaldoClientePagoContadoDocumento(QString _codigo
     }
 }
 
-int ModuloDocumentos::retornaCantidadLineasDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{
+int ModuloDocumentos::retornaCantidadLineasDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -1478,7 +1501,7 @@ int ModuloDocumentos::retornaCantidadLineasDocumento(QString _codigoDocumento,QS
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT count(*) FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {
+        if(query.exec("SELECT count(*) FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
                     return query.value(0).toInt();
@@ -1494,7 +1517,7 @@ int ModuloDocumentos::retornaCantidadLineasDocumento(QString _codigoDocumento,QS
     }
 }
 
-QString ModuloDocumentos::retornoCodigoArticuloDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloDocumentos::retornoCodigoArticuloDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 
     Database::chequeaStatusAccesoMysql();
@@ -1509,7 +1532,7 @@ QString ModuloDocumentos::retornoCodigoArticuloDeLineaDocumento(QString _codigoD
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT codigoArticulo FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT codigoArticulo FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
                     return query.value(0).toString();
@@ -1568,7 +1591,7 @@ QString ModuloDocumentos::retornoCantidadDocumentosPorCliente(QString _codigoCli
     }
 }
 
-QString ModuloDocumentos::retornoCodigoArticuloBarrasDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloDocumentos::retornoCodigoArticuloBarrasDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -1582,7 +1605,7 @@ QString ModuloDocumentos::retornoCodigoArticuloBarrasDeLineaDocumento(QString _c
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT codigoArticuloBarras FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT codigoArticuloBarras FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
                     return query.value(0).toString();
@@ -1598,7 +1621,7 @@ QString ModuloDocumentos::retornoCodigoArticuloBarrasDeLineaDocumento(QString _c
     }
 }
 
-double ModuloDocumentos::retornoPrecioArticuloDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+double ModuloDocumentos::retornoPrecioArticuloDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -1610,7 +1633,7 @@ double ModuloDocumentos::retornoPrecioArticuloDeLineaDocumento(QString _codigoDo
     if(conexion){
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT precioArticuloUnitario FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT precioArticuloUnitario FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
                     return query.value(0).toDouble();
@@ -1626,7 +1649,7 @@ double ModuloDocumentos::retornoPrecioArticuloDeLineaDocumento(QString _codigoDo
     }
 }
 
-double ModuloDocumentos::retornoCostoArticuloMonedaReferenciaDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+double ModuloDocumentos::retornoCostoArticuloMonedaReferenciaDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea,QString _serieDocumento) {
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -1638,36 +1661,7 @@ double ModuloDocumentos::retornoCostoArticuloMonedaReferenciaDeLineaDocumento(QS
     if(conexion){
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT costoArticuloMonedaReferencia FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
-            if(query.first()){
-                if(query.value(0).toString()!=0){
-                    return query.value(0).toDouble();
-                }else{
-                    return 0.00;
-                }
-            }else{return 0.00;}
-        }else{
-            return 0.00;
-        }
-    }else{
-        return 0.00;
-    }
-}
-
-
-double ModuloDocumentos::retornoDescuentoLineaArticuloDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
-    bool conexion=true;
-    Database::chequeaStatusAccesoMysql();
-    if(!Database::connect().isOpen()){
-        if(!Database::connect().open()){
-            qDebug() << "No conecto";
-            conexion=false;
-        }
-    }
-    if(conexion){
-        QSqlQuery query(Database::connect());
-
-        if(query.exec("SELECT montoDescuento FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT costoArticuloMonedaReferencia FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
                     return query.value(0).toDouble();
@@ -1684,7 +1678,36 @@ double ModuloDocumentos::retornoDescuentoLineaArticuloDeLineaDocumento(QString _
 }
 
 
-int ModuloDocumentos::retornoCantidadArticuloDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+double ModuloDocumentos::retornoDescuentoLineaArticuloDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
+    bool conexion=true;
+    Database::chequeaStatusAccesoMysql();
+    if(!Database::connect().isOpen()){
+        if(!Database::connect().open()){
+            qDebug() << "No conecto";
+            conexion=false;
+        }
+    }
+    if(conexion){
+        QSqlQuery query(Database::connect());
+
+        if(query.exec("SELECT montoDescuento FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
+            if(query.first()){
+                if(query.value(0).toString()!=0){
+                    return query.value(0).toDouble();
+                }else{
+                    return 0.00;
+                }
+            }else{return 0.00;}
+        }else{
+            return 0.00;
+        }
+    }else{
+        return 0.00;
+    }
+}
+
+
+int ModuloDocumentos::retornoCantidadArticuloDeLineaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -1697,7 +1720,7 @@ int ModuloDocumentos::retornoCantidadArticuloDeLineaDocumento(QString _codigoDoc
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT cantidad FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT cantidad FROM DocumentosLineas where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
                     return query.value(0).toInt();
@@ -1723,10 +1746,9 @@ qlonglong ModuloDocumentos::retornoCodigoUltimoDocumentoDisponible(QString _codi
         }
     }
     if(conexion){
+        QSqlQuery query(Database::connect());                    
+        if(query.exec("SELECT DOC.codigoDocumento FROM Documentos DOC join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento where DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento=TD.serieDocumento order by DOC.codigoDocumento desc limit 1")) {
 
-        QSqlQuery query(Database::connect());
-
-        if(query.exec("SELECT codigoDocumento FROM Documentos where codigoTipoDocumento='"+_codigoTipoDocumento+"' order by codigoDocumento desc limit 1")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
                     return query.value(0).toLongLong()+1;
@@ -1742,7 +1764,7 @@ qlonglong ModuloDocumentos::retornoCodigoUltimoDocumentoDisponible(QString _codi
     }
 }
 
-QString ModuloDocumentos::retornacodigoEstadoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{
+QString ModuloDocumentos::retornacodigoEstadoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -1753,7 +1775,7 @@ QString ModuloDocumentos::retornacodigoEstadoDocumento(QString _codigoDocumento,
     }
     if(conexion){
         QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.codigoEstadoDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {
+        if(query.exec("select DOC.codigoEstadoDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=""){
                     return query.value(0).toString();
@@ -1933,7 +1955,8 @@ bool ModuloDocumentos::actualizarInformacionCFEDocumentoDynamia(QString _codigoD
                                                                 QString _cod_seguridad, QString _cae_id,
                                                                 QString _desde, QString _hasta,
                                                                 QString _qr, QString _idDocGaia,
-                                                                QString _caeTipoDocumentoCFEDescripcion
+                                                                QString _caeTipoDocumentoCFEDescripcion,
+                                                                QString _serieDocumento
                                                                 ){
 
     Database::chequeaStatusAccesoMysql();
@@ -1947,7 +1970,7 @@ bool ModuloDocumentos::actualizarInformacionCFEDocumentoDynamia(QString _codigoD
     if(conexion){
 
         QSqlQuery query(Database::connect());
-        if(query.exec("update Documentos set cae_numeroCae='"+_nro+"',cae_serie='"+_serie+"',cae_fechaVencimiento='"+_vencimiento+"',cae_codigoSeguridad='"+_cod_seguridad+"',cae_Cae='"+_cae_id+"',cae_rangoDesde='"+_desde+"',cae_rangoHasta='"+_hasta+"',cae_QrCode='"+_qr+"',cae_idDocGaia='"+_idDocGaia+"',caeTipoDocumentoCFEDescripcion='"+_caeTipoDocumentoCFEDescripcion+"'   where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+        if(query.exec("update Documentos set cae_numeroCae='"+_nro+"',cae_serie='"+_serie+"',cae_fechaVencimiento='"+_vencimiento+"',cae_codigoSeguridad='"+_cod_seguridad+"',cae_Cae='"+_cae_id+"',cae_rangoDesde='"+_desde+"',cae_rangoHasta='"+_hasta+"',cae_QrCode='"+_qr+"',cae_idDocGaia='"+_idDocGaia+"',caeTipoDocumentoCFEDescripcion='"+_caeTipoDocumentoCFEDescripcion+"'   where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")){
             return true;
         }else{
             return false;
@@ -1963,75 +1986,75 @@ bool ModuloDocumentos::actualizarInformacionCFEDocumentoDynamia(QString _codigoD
 
 
 
-QString ModuloDocumentos::retornatipoClienteDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.tipoCliente from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+QString ModuloDocumentos::retornatipoClienteDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.tipoCliente from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
 
-QString ModuloDocumentos::retornacodigoClienteDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.codigoCliente from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-
-QString ModuloDocumentos::retornaserieDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.serieDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornacodigoVendedorComisionaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.codigoVendedorComisiona from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornacodigoLiquidacionDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.codigoLiquidacion from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornacodigoVendedorLiquidacionDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.codigoVendedorLiquidacion from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornafechaEmisionDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.fechaEmisionDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornacodigoMonedaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.codigoMonedaDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaprecioIvaVentaDocumento    (QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.precioIvaVenta from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaprecioSubTotalVentaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.precioSubTotalVenta from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaprecioTotalVentaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.precioTotalVenta from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornatotalIva1Documento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.totalIva1 from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornatotalIva2Documento  (QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.totalIva2 from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornatotalIva3Documento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.totalIva3 from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaobservacionesDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.observaciones from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaonumeroCuentaBancariaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.numeroCuentaBancaria from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaocodigoBancoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.codigoBanco from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaEsDocumentoWebDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.esDocumentoWeb from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaMontoDescuentoTotalDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.montoDescuentoTotal from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaFormaDePagoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.formaDePago from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaPorcentajeDescuentoAlTotalDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.porcentajeDescuentoAlTotal from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
-
-QString ModuloDocumentos::retornaEsDocumentoCFEDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
-        if(query.exec("select DOC.esDocumentoCFE from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+QString ModuloDocumentos::retornacodigoClienteDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.codigoCliente from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
 
 
-QString ModuloDocumentos::retornaNumeroCFEOriginal(QString _codigoDocumento,QString _codigoTipoDocumento) const{
+QString ModuloDocumentos::retornaserieDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.serieDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornacodigoVendedorComisionaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.codigoVendedorComisiona from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornacodigoLiquidacionDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.codigoLiquidacion from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornacodigoVendedorLiquidacionDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.codigoVendedorLiquidacion from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornafechaEmisionDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.fechaEmisionDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornacodigoMonedaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.codigoMonedaDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaprecioIvaVentaDocumento    (QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.precioIvaVenta from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaprecioSubTotalVentaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.precioSubTotalVenta from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaprecioTotalVentaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.precioTotalVenta from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornatotalIva1Documento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.totalIva1 from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornatotalIva2Documento  (QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.totalIva2 from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornatotalIva3Documento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.totalIva3 from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaobservacionesDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.observaciones from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaonumeroCuentaBancariaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.numeroCuentaBancaria from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaocodigoBancoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.codigoBanco from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaEsDocumentoWebDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.esDocumentoWeb from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaMontoDescuentoTotalDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.montoDescuentoTotal from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaFormaDePagoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.formaDePago from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaPorcentajeDescuentoAlTotalDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.porcentajeDescuentoAlTotal from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+QString ModuloDocumentos::retornaEsDocumentoCFEDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{    bool conexion=true;    if(!Database::connect().isOpen()){        if(!Database::connect().open()){            qDebug() << "No conecto";            conexion=false;        }    }    if(conexion){        QSqlQuery query(Database::connect());
+        if(query.exec("select DOC.esDocumentoCFE from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {            if(query.first()){                if(query.value(0).toString()!=""){                    return query.value(0).toString();                }else{                    return  "";                }            }else{return "Error BD";}        }else{            return "Error SQL";        }    }else{        return "Error BD";    }}
+
+
+QString ModuloDocumentos::retornaNumeroCFEOriginal(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{
 
 
     bool conexion=true;
@@ -2050,7 +2073,7 @@ QString ModuloDocumentos::retornaNumeroCFEOriginal(QString _codigoDocumento,QStr
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("select DOC.cae_numeroCae from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+        if(query.exec("select DOC.cae_numeroCae from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")){
             if(query.first()){
                 if(query.value(0).toString()!=""){
                     return query.value(0).toString();
@@ -2071,7 +2094,7 @@ QString ModuloDocumentos::retornaNumeroCFEOriginal(QString _codigoDocumento,QStr
 
 
 
-bool ModuloDocumentos::existeDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{
+bool ModuloDocumentos::existeDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{
 
 
     bool conexion=true;
@@ -2089,7 +2112,7 @@ bool ModuloDocumentos::existeDocumento(QString _codigoDocumento,QString _codigoT
     if(conexion){
         QSqlQuery query(Database::connect());
 
-        if(query.exec("select DOC.codigoDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+        if(query.exec("select DOC.codigoDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")){
             if(query.first()){
                 return true;
             }else{
@@ -2108,7 +2131,7 @@ bool ModuloDocumentos::existeDocumento(QString _codigoDocumento,QString _codigoT
 /// ##########################################################################################################################
 /// #        Imprime el documento en formato ticket          #################################################################
 /// ##########################################################################################################################
-bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento,QString _codigoTipoDocumento,QString _impresora, int cantidadDecimalesMonto){
+bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento,QString _codigoTipoDocumento,QString _impresora, int cantidadDecimalesMonto, QString _serieDocumento){
 
     //##################################################
     // Preparo los seteos de la impresora ##############
@@ -2140,58 +2163,60 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
     consultaSql +=" CLI.codigoTipoDocumentoCliente'tipoDocumento',  ";
     consultaSql +=" CLI.rut'numeroDocumento', ";
     consultaSql +=" case when DL.precioArticuloUnitario=0 then '5' else IVA.indicadorFacturacionCFE end 'indicador_facturacion', ";
-    consultaSql +=" UPPER(left(trim(AR.descripcionArticulo),25))'descripcion', ";
-    consultaSql +=" DL.cantidad'cantidad',";
-    consultaSql +=" 'N/A' as 'unidad', ";
-    consultaSql +=" CAST(DOC.porcentajeDescuentoAlTotal AS DECIMAL(10,3)) 'descuento', ";
-    consultaSql +=" '1' as 'tipo_descuento', ";
-    consultaSql +=" case when IVA.indicadorFacturacionCFE=4 then CAST(IVA.porcentajeIva as DECIMAL(20,2)) else 'null' end 'ivaArticulo', ";
-    consultaSql +=" CAST(DL.precioArticuloUnitario AS DECIMAL(20,3))'precio_unitario', ";
-    consultaSql +=" CAST((DL.cantidad*DL.precioArticuloUnitario) -  (((DL.cantidad*DL.precioArticuloUnitario)*((DOC.porcentajeDescuentoAlTotal/100)+1))-(DL.cantidad*DL.precioArticuloUnitario))  AS DECIMAL(20,3))'totalLinea', ";
-    consultaSql +=" CAST(DOC.precioSubTotalVenta AS DECIMAL(20,3))'subtotal', ";
-    consultaSql +=" CAST(DOC.totalIva3 AS DECIMAL(20,3))'exento', ";
-    consultaSql +=" CAST(DOC.totalIva2 AS DECIMAL(20,3))'minima', ";
-    consultaSql +=" CAST(DOC.totalIva1 AS DECIMAL(20,3))'basica', ";
-    consultaSql +=" case when IVA.indicadorFacturacionCFE=4 then CAST(DL.precioIvaArticulo AS DECIMAL(20,3)) else 'null' end 'otro', ";
-    consultaSql +=" CAST(DOC.precioTotalVenta AS DECIMAL(20,3))'total', ";
-    consultaSql +=" TD.descripcionTipoDocumentoCFE'TipoDocumentoCFE', ";
+    consultaSql +=" UPPER(left(trim(AR.descripcionArticulo),35))'descripcion', "; // indice 15
+    consultaSql +=" DL.cantidad'cantidad',";                                      // indice 16
+    consultaSql +=" 'N/A' as 'unidad', ";                                         // indice 17
+    consultaSql +=" CAST(DOC.porcentajeDescuentoAlTotal AS DECIMAL(10,3)) 'descuento', ";   // indice 18
+    consultaSql +=" '1' as 'tipo_descuento', ";                                             // indice 19
+    consultaSql +=" case when IVA.indicadorFacturacionCFE=4 then CAST(IVA.porcentajeIva as DECIMAL(20,2)) else 'null' end 'ivaArticulo', "; // indice 20
+    consultaSql +=" CAST(DL.precioArticuloUnitario AS DECIMAL(20,3))'precio_unitario', ";                                                   // indice 21
+    consultaSql +=" CAST((DL.cantidad*DL.precioArticuloUnitario) -  (((DL.cantidad*DL.precioArticuloUnitario)*((DOC.porcentajeDescuentoAlTotal/100)+1))-(DL.cantidad*DL.precioArticuloUnitario))  AS DECIMAL(20,3))'totalLinea', "; // indice 22
+    consultaSql +=" CAST(DOC.precioSubTotalVenta AS DECIMAL(20,3))'subtotal', ";    // indice 23
+    consultaSql +=" CAST(DOC.totalIva3 AS DECIMAL(20,3))'exento', ";                // indice 24
+    consultaSql +=" CAST(DOC.totalIva2 AS DECIMAL(20,3))'minima', ";                // indice 25
+    consultaSql +=" CAST(DOC.totalIva1 AS DECIMAL(20,3))'basica', ";                // indice 26
+    consultaSql +=" case when IVA.indicadorFacturacionCFE=4 then CAST(DL.precioIvaArticulo AS DECIMAL(20,3)) else 'null' end 'otro', ";     // indice 27
+    consultaSql +=" CAST(DOC.precioTotalVenta AS DECIMAL(20,3))'total', ";          // indice 28
+    consultaSql +=" TD.descripcionTipoDocumentoCFE'TipoDocumentoCFE', ";            // indice 29
     consultaSql +=" case when DOC.codigoMonedaDocumento=1 then    ";
     consultaSql +="          case when DOC.precioTotalVenta > (SELECT 10000*valorParametro FROM CFE_ParametrosGenerales where nombreParametro='montoUI') then 'mayor' else 'menor' end ";
     consultaSql +=" else  ";
     consultaSql +="          case when (DOC.precioTotalVenta*MO.cotizacionMoneda) > (SELECT 10000*valorParametro FROM CFE_ParametrosGenerales where nombreParametro='montoUI') then 'mayor' else 'menor' end ";
-    consultaSql +=" end 'UI', ";
-    consultaSql +=" case when IVA.indicadorFacturacionCFE=4 then CAST(IVA.porcentajeIva as DECIMAL(20,2)) else 'null' end 'ivaOtroPorcentaje', ";
-    consultaSql +=" CAST(DOC.precioTotalVenta AS DECIMAL(20,3))-(CAST(DOC.precioSubTotalVenta AS DECIMAL(20,3))+CAST(DOC.precioIvaVenta AS DECIMAL(20,3))) 'Redondeo',";
-    consultaSql +=" case when AR.codigoIva=IVA.codigoIva and IVA.indicadorFacturacionCFE=1 then CAST((DL.cantidad*DL.precioArticuloUnitario) -  (((DL.cantidad*DL.precioArticuloUnitario)*((DOC.porcentajeDescuentoAlTotal/100)+1))-(DL.cantidad*DL.precioArticuloUnitario))  AS DECIMAL(20,3)) else 0 end 'Exento2',";
-    consultaSql +=" DOC.esDocumentoCFE,";    
+    consultaSql +=" end 'UI', ";                            // indice 30
+    consultaSql +=" case when IVA.indicadorFacturacionCFE=4 then CAST(IVA.porcentajeIva as DECIMAL(20,2)) else 'null' end 'ivaOtroPorcentaje', ";      // indice 31
+    consultaSql +=" CAST(DOC.precioTotalVenta AS DECIMAL(20,3))-(CAST(DOC.precioSubTotalVenta AS DECIMAL(20,3))+CAST(DOC.precioIvaVenta AS DECIMAL(20,3))) 'Redondeo',";    // indice 32
+    consultaSql +=" case when AR.codigoIva=IVA.codigoIva and IVA.indicadorFacturacionCFE=1 then CAST((DL.cantidad*DL.precioArticuloUnitario) -  (((DL.cantidad*DL.precioArticuloUnitario)*((DOC.porcentajeDescuentoAlTotal/100)+1))-(DL.cantidad*DL.precioArticuloUnitario))  AS DECIMAL(20,3)) else 0 end 'Exento2',"; // indice 33
+    consultaSql +=" DOC.esDocumentoCFE,";                   // indice 34
 
     //Datos del CFE
-    consultaSql +=" DOC.cae_numeroCae,";
-    consultaSql +=" DOC.cae_serie,";
-    consultaSql +=" DOC.cae_fechaVencimiento,";
-    consultaSql +=" DOC.cae_codigoSeguridad,";
-    consultaSql +=" DOC.cae_Cae,";
-    consultaSql +=" DOC.cae_rangoDesde,";
-    consultaSql +=" DOC.cae_rangoHasta,";
-    consultaSql +=" DOC.cae_urlCode,";
-    consultaSql +=" DOC.cae_QrCode,";
+    consultaSql +=" DOC.cae_numeroCae,";                    // indice 35
+    consultaSql +=" DOC.cae_serie,";                        // indice 36
+    consultaSql +=" DOC.cae_fechaVencimiento,";             // indice 37
+    consultaSql +=" DOC.cae_codigoSeguridad,";              // indice 38
+    consultaSql +=" DOC.cae_Cae,";                          // indice 39
+    consultaSql +=" DOC.cae_rangoDesde,";                   // indice 40
+    consultaSql +=" DOC.cae_rangoHasta,";                   // indice 41
+    consultaSql +=" DOC.cae_urlCode,";                      // indice 42
+    consultaSql +=" DOC.cae_QrCode,";                       // indice 43
 
-    consultaSql +=" DOC.caeTipoDocumentoCFEDescripcion,";
-    consultaSql +=" DOC.serieDocumento,";
-    consultaSql +=" CFETDC.descripcionTipoDocumentoCliente,";
-    consultaSql +=" (CAST(DOC.precioSubTotalVenta AS DECIMAL(20,3))+CAST(DOC.precioIvaVenta AS DECIMAL(20,3))) 'totalSinRedondeo',";
-    consultaSql +=" DOC.usuarioUltimaModificacion,";
+    consultaSql +=" DOC.caeTipoDocumentoCFEDescripcion,";    // indice 44
+    consultaSql +=" DOC.serieDocumento,";                    // indice 45
+    consultaSql +=" CFETDC.descripcionTipoDocumentoCliente,";// indice 46
+    consultaSql +=" (CAST(DOC.precioSubTotalVenta AS DECIMAL(20,3))+CAST(DOC.precioIvaVenta AS DECIMAL(20,3))) 'totalSinRedondeo',"; // indice 47
+    consultaSql +=" DOC.usuarioUltimaModificacion,";         // indice 48
 
-    consultaSql +=" DATE_FORMAT(fechaHoraGuardadoDocumentoSQL,'%H:%m:%s'),";
-    consultaSql +=" DOC.usuarioAlta,";
-    consultaSql +=" DL.codigoArticulo";
-
-
+    consultaSql +=" DATE_FORMAT(fechaHoraGuardadoDocumentoSQL,'%H:%m:%s'),"; // indice 49
+    consultaSql +=" DOC.usuarioAlta,";                       // indice 50
+    consultaSql +=" DL.codigoArticulo,";                     // indice 51
+    consultaSql +=" TD.descripcionTipoDocumentoImpresora,";  // indice 52
+    consultaSql +=" left(trim(DOC.observaciones),30),";      // indice 53
+    consultaSql +=" TD.descripcionTipoDocumento,";           // indice 54
+    consultaSql +=" CLI.codigoCliente";                      // indice 55
 
 
 
     consultaSql +=" FROM DocumentosLineas DL  ";
-    consultaSql +=" join Documentos DOC on DOC.codigoDocumento=DL.codigoDocumento and DOC.codigoTipoDocumento=DL.codigoTipoDocumento ";
+    consultaSql +=" join Documentos DOC on DOC.codigoDocumento=DL.codigoDocumento and DOC.codigoTipoDocumento=DL.codigoTipoDocumento and DOC.serieDocumento=DL.serieDocumento ";
     consultaSql +=" join Articulos AR on AR.codigoArticulo=DL.codigoArticulo ";
     consultaSql +=" join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento ";
     consultaSql +=" join Monedas MO on MO.codigoMoneda = DOC.codigoMonedaDocumento ";
@@ -2200,7 +2225,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
     consultaSql +=" join Pais PA on PA.codigoPais=CLI.codigoPais ";
     consultaSql +=" join Departamentos DEP on DEP.codigoDepartamento=CLI.codigoDepartamento and DEP.codigoPais=CLI.codigoPais ";
     consultaSql +=" join Ivas IVA on IVA.codigoIva=AR.codigoIva ";
-    consultaSql +=" where DOC.codigoDocumento="+_codigoDocumento+" and DOC.codigoTipoDocumento="+_codigoTipoDocumento+" ;";
+    consultaSql +=" where DOC.codigoDocumento="+_codigoDocumento+" and DOC.codigoTipoDocumento="+_codigoTipoDocumento+" and DOC.serieDocumento='"+_serieDocumento+"' ;";
 
 
 
@@ -2215,11 +2240,14 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
     consultaDesgloseIVA +="CAST(DOC.totalIva3 AS DECIMAL(20,3))'exento',  CAST(DOC.totalIva2 AS DECIMAL(20,3))'minima',  CAST(DOC.totalIva1 AS DECIMAL(20,3))'basica',  case when IVA.indicadorFacturacionCFE=4 then CAST(DL.precioIvaArticulo AS DECIMAL(20,3)) else 'null' end 'otro',  ";
     consultaDesgloseIVA +="CAST(DOC.precioTotalVenta AS DECIMAL(20,3))'total',  TD.descripcionTipoDocumentoCFE'TipoDocumentoCFE',  case when DOC.codigoMonedaDocumento=1 then              case when DOC.precioTotalVenta > (SELECT 10000*valorParametro FROM CFE_ParametrosGenerales where nombreParametro='montoUI') then 'mayor' else 'menor' end  else            case when (DOC.precioTotalVenta*MO.cotizacionMoneda) > (SELECT 10000*valorParametro FROM CFE_ParametrosGenerales where nombreParametro='montoUI') then 'mayor' else 'menor' end  end 'UI',  case when IVA.indicadorFacturacionCFE=4 then CAST(IVA.porcentajeIva as DECIMAL(20,2)) else 'null' end 'ivaOtroPorcentaje',  CAST(DOC.precioTotalVenta AS DECIMAL(20,3))-(CAST(DOC.precioSubTotalVenta AS DECIMAL(20,3))+CAST(DOC.precioIvaVenta AS DECIMAL(20,3))) 'Redondeo',";
     consultaDesgloseIVA +="case when AR.codigoIva=IVA.codigoIva and IVA.indicadorFacturacionCFE=1 then CAST((DL.cantidad*DL.precioArticuloUnitario) -  (((DL.cantidad*DL.precioArticuloUnitario)*((DOC.porcentajeDescuentoAlTotal/100)+1))-(DL.cantidad*DL.precioArticuloUnitario))  AS DECIMAL(20,3)) else 0 end 'Exento2',  DOC.esDocumentoCFE, DOC.cae_numeroCae, DOC.cae_serie, DOC.cae_fechaVencimiento, DOC.cae_codigoSeguridad, DOC.cae_Cae, DOC.cae_rangoDesde, DOC.cae_rangoHasta, DOC.cae_urlCode, DOC.cae_QrCode, DOC.caeTipoDocumentoCFEDescripcion, DOC.serieDocumento, CFETDC.descripcionTipoDocumentoCliente, (CAST(DOC.precioSubTotalVenta AS DECIMAL(20,3))+CAST(DOC.precioIvaVenta AS DECIMAL(20,3))) 'totalSinRedondeo' ,";
-    consultaDesgloseIVA +="AR.codigoIva'tipoDeIva'   FROM DocumentosLineas DL join Documentos DOC on DOC.codigoDocumento=DL.codigoDocumento and DOC.codigoTipoDocumento=DL.codigoTipoDocumento  join Articulos AR on AR.codigoArticulo=DL.codigoArticulo  join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento  join Monedas MO on MO.codigoMoneda = DOC.codigoMonedaDocumento  join Clientes CLI on CLI.codigoCliente=DOC.codigoCliente and CLI.tipoCliente=DOC.tipoCliente join CFE_TipoDocumentoCliente CFETDC on CFETDC.codigoTipoDocumentoCliente=CLI.codigoTipoDocumentoCliente   join Pais PA on PA.codigoPais=CLI.codigoPais  join Departamentos DEP on DEP.codigoDepartamento=CLI.codigoDepartamento and DEP.codigoPais=CLI.codigoPais  join Ivas IVA on IVA.codigoIva=AR.codigoIva  where DOC.codigoDocumento="+_codigoDocumento+" and DOC.codigoTipoDocumento="+_codigoTipoDocumento+") sub;";
+    consultaDesgloseIVA +="AR.codigoIva'tipoDeIva'   FROM DocumentosLineas DL join Documentos DOC on DOC.codigoDocumento=DL.codigoDocumento and DOC.codigoTipoDocumento=DL.codigoTipoDocumento and DOC.serieDocumento=DL.serieDocumento  join Articulos AR on AR.codigoArticulo=DL.codigoArticulo  join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento  join Monedas MO on MO.codigoMoneda = DOC.codigoMonedaDocumento  join Clientes CLI on CLI.codigoCliente=DOC.codigoCliente and CLI.tipoCliente=DOC.tipoCliente join CFE_TipoDocumentoCliente CFETDC on CFETDC.codigoTipoDocumentoCliente=CLI.codigoTipoDocumentoCliente   join Pais PA on PA.codigoPais=CLI.codigoPais  join Departamentos DEP on DEP.codigoDepartamento=CLI.codigoDepartamento and DEP.codigoPais=CLI.codigoPais  join Ivas IVA on IVA.codigoIva=AR.codigoIva  where DOC.codigoDocumento="+_codigoDocumento+" and DOC.codigoTipoDocumento="+_codigoTipoDocumento+" and DOC.serieDocumento='"+_serieDocumento+"') sub;";
+
+
+    //Cantidad de copias por defecto del documento
+    int MaximoCopias=0;
 
 
 
-//qDebug()<< consultaSql;
 
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
@@ -2231,7 +2259,28 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
     }
     if(conexion){
         QSqlQuery query(Database::connect());
-        QSqlQuery queryDesgloseIva(Database::connect());
+        QSqlQuery queryDesgloseIva(Database::connect());        
+        QSqlQuery queryCantidadCopias(Database::connect());
+
+        if(queryCantidadCopias.exec("SELECT cantidadCopias FROM TipoDocumento where codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {
+            if(queryCantidadCopias.first()){
+                if(queryCantidadCopias.value(0).toString()!=0){
+                    MaximoCopias = queryCantidadCopias.value(0).toInt();
+                }
+            }else{return false;}
+        }else{
+            return false;
+        }
+
+        bool seImprimioTodoOk=false;
+
+        for (int var = 0; var < MaximoCopias; ++var) {
+                 query.first();
+                 query.previous();
+                 queryDesgloseIva.first();
+                 queryDesgloseIva.previous();
+                 seImprimioTodoOk=false;
+
         if(query.exec(consultaSql)) {
             if(query.first()){
 
@@ -2269,10 +2318,12 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
                 }
 
                 //Cabezal
+                QString codigoCliente=query.value(55).toString();
                 QString fecha=query.value(0).toString();
                 QString iso_moneda=query.value(1).toString().replace("\n","");
                 QString montos_brutos=query.value(2).toString();
-                QString razon_social=query.value(5).toString().toUpper().replace("Á","A").replace("É","E").replace("Í","I").replace("Ó","O").replace("Ú","U").replace("\"","\\\"").replace("\n","");
+                QString razon_social=query.value(5).toString().toUpper().replace("Á","A").replace("É","E").replace("Í","I").replace("Ó","O").replace("Ú","U").replace("\"","\\\"").replace("\n","")+"("+codigoCliente+")";
+                QString nombreCliente=query.value(5).toString().toUpper().replace("Á","A").replace("É","E").replace("Í","I").replace("Ó","O").replace("Ú","U").replace("\"","\\\"").replace("\n","");
                 QString ciudad=query.value(8).toString().toUpper().replace("Á","A").replace("É","E").replace("Í","I").replace("Ó","O").replace("Ú","U").replace("\"","\\\"").replace("\n","");
                 QString direccion=query.value(9).toString().toUpper().replace("Á","A").replace("É","E").replace("Í","I").replace("Ó","O").replace("Ú","U").replace("\"","\\\"").replace("\n","");
                 QString tipoDocumento=query.value(12).toString().replace("\n","");
@@ -2326,9 +2377,15 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
                 QString serieInterna = query.value(45).toString();
 
 
+                QString descripcionTipoDocumentoImpresora=query.value(52).toString().trimmed();
+
+
+                QString observacionesDelDocumento=query.value(53).toString().trimmed();
+
+
                 // Información si es e-ticket o cualquiera de ellos
                 if(esDocumentoCFE=="0"){
-                    caeTipoDocumentoCFEDescripcionV=tipoDocumentoCFE;
+                    caeTipoDocumentoCFEDescripcionV=query.value(54).toString().trimmed();
                 }
                 painter.drawText(cuadro(0.0,1.0+desplazamientoLogo,8.0,0.5,false),caeTipoDocumentoCFEDescripcionV);
                 //Fecha
@@ -2365,10 +2422,24 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
                 painter.drawText( cuadro(leftTextoConsumoFinalRut,2.1+desplazamientoLogo,8.0,0.5,false), textoConsumoFinalRut);
                 fuente.setBold(false);
                 painter.setFont(fuente);
+
+
                 //Datos del cliente
-                painter.drawText( cuadro(0.4,3.0+desplazamientoLogo,8.0,0.5,false), razon_social);
-                painter.drawText( cuadro(0.4,3.3+desplazamientoLogo,8.0,0.5,false), direccion);
-                painter.drawText( cuadro(0.4,3.6+desplazamientoLogo,8.0,0.5,false), "TIPO DOC: "+ tipoDocumento + " - " + descripcionTipoDocumentoCliente);
+                if(tipoDocumento!="2"){
+                    if(numeroDocumento.trimmed()==""){
+                        desplazamientoLogo=desplazamientoLogo-0.9;
+                    }else{
+                        painter.drawText( cuadro(0.4,3.0+desplazamientoLogo,8.0,0.5,false), razon_social);
+                        painter.drawText( cuadro(0.4,3.3+desplazamientoLogo,8.0,0.5,false), direccion);
+                        painter.drawText( cuadro(0.4,3.6+desplazamientoLogo,8.0,0.5,false), "TIPO DOC: "+ tipoDocumento + " - " + descripcionTipoDocumentoCliente);
+                    }
+                }else{
+                    painter.drawText( cuadro(0.4,3.0+desplazamientoLogo,8.0,0.5,false), razon_social);
+                    painter.drawText( cuadro(0.4,3.3+desplazamientoLogo,8.0,0.5,false), direccion);
+                    painter.drawText( cuadro(0.4,3.6+desplazamientoLogo,8.0,0.5,false), "TIPO DOC: "+ tipoDocumento + " - " + descripcionTipoDocumentoCliente);
+                }
+
+
 
 
                 // Se imprime una linea separadora
@@ -2420,7 +2491,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
                 painter.setFont(fuente);
                 painter.drawText(cuadro(0.0,0.4+desplazamientoLogo,8.0,0.5,false), "T O T A L :");
 
-                painter.drawText(cuadroTicketRight(8.0,0.4+desplazamientoLogo,8.0,0.5,QString::number(totalSinRedondeo,'f',2)),QString::number(totalSinRedondeo,'f',2));
+                painter.drawText(cuadroTicketRight(8.0,0.4+desplazamientoLogo,8.0,0.5,QString::number(total,'f',2)),QString::number(total,'f',2));
 
 
                 fuente.setPointSize(8);
@@ -2429,8 +2500,8 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
 
 
                 //Imprimo pago total real
-                painter.drawText(cuadro(0.0,0.9+desplazamientoLogo,8.0,0.5,false), "Pago total");
-                painter.drawText(cuadroTicketRight(8.0,0.9+desplazamientoLogo,8.0,0.5,QString::number(total,'f',2)),QString::number(total,'f',2));
+                painter.drawText(cuadro(0.0,0.9+desplazamientoLogo,8.0,0.5,false), "Pago total");                
+                painter.drawText(cuadroTicketRight(8.0,0.9+desplazamientoLogo,8.0,0.5,QString::number(totalSinRedondeo,'f',2)),QString::number(totalSinRedondeo,'f',2));
 
                 //Imprimo el redondeo
                 painter.drawText(cuadro(0.0,1.2+desplazamientoLogo,8.0,0.5,false), "Redondeo");
@@ -2568,11 +2639,34 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
 
 
 
+                // Imprimo el modo de pago, contado,credito, etc.
+                if(descripcionTipoDocumentoImpresora.trimmed()!=""){
+                    desplazamientoLogo=desplazamientoLogo+0.3;
+                    painter.drawText(cuadro(0.0,4.8+desplazamientoLogo,8.0,0.5,false),descripcionTipoDocumentoImpresora);
+                }
+
+
+                // Imprimo las observaciones del documento, si el mismo esta configurado para ello
+                if(func_tipoDocumentos.retornaValorCampoTipoDocumento(_codigoTipoDocumento,"imprimeObservacionesEnTicket")=="1"){
+
+                    if(observacionesDelDocumento!=""){
+                        desplazamientoLogo=desplazamientoLogo+0.3;
+                        painter.drawText(cuadro(0.0,4.8+desplazamientoLogo,8.0,0.5,false),observacionesDelDocumento);
+                    }
+                }
+
+
+                if(tipoDocumento!="2"){
+                    // Información de cliente
+                    desplazamientoLogo=desplazamientoLogo+0.3;
+                    painter.drawText(cuadro(0.0,4.8+desplazamientoLogo,8.0,0.5,false),nombreCliente+"("+codigoCliente+")");
+                }
+
 
                 // Se imprime linea fin de adenda
                 fuente.setBold(true);
                 painter.setFont(fuente);
-                painter.drawText( cuadro(0.0,5.2+desplazamientoLogo,8.0,0.5,false), "________________ FIN ADENDA ________________");
+                painter.drawText( cuadro(0.0,5.2+desplazamientoLogo,8.0,0.5,false), "_________________ FIN ADENDA ________________");
                 fuente.setBold(false);
                 painter.setFont(fuente);
 
@@ -2631,19 +2725,27 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
 
                 }
 
+
+                painter.end();
+                seImprimioTodoOk=true;
+
+            }else{
+                return false;
             }
+        }else{
+            return false;
         }
+
+        }
+
+        return seImprimioTodoOk;
+
+
+
     }else{
         return false;
     }
-
-
-
-     painter.end();
-
-
-
-     return true;
+     return false;
 
 }
 
@@ -2653,7 +2755,10 @@ bool ModuloDocumentos::emitirDocumentoEnImpresoraTicket(QString _codigoDocumento
 /// ##########################################################################################################################
 /// #        Realiza los calculos para posicionar los campos del modelo de impresion e imprime el documento ##################
 /// ##########################################################################################################################
-bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QString _codigoTipoDocumento,QString _impresora){
+bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QString _codigoTipoDocumento,QString _impresora,QString _serieDocumento){
+
+
+
 
     // consulto si estoy en modo CFE y si es modo IMIX me voy de la funciona, ya que IMIX imprime él, no Khitomer.
     if(func_configuracion.retornaValorConfiguracion("MODO_CFE")=="1" && func_CFE_ParametrosGenerales.retornaValor("modoFuncionCFE")=="0"){
@@ -2674,7 +2779,8 @@ bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QStri
         // Chequeo si el documento se imprime en modo ticket
         if(func_tipoDocumentos.retornaPermisosDelDocumento(_codigoTipoDocumento,"imprimeEnFormatoTicket")){
 
-            return emitirDocumentoEnImpresoraTicket(_codigoDocumento,_codigoTipoDocumento,_impresora,cantidadDecimalesMonto);
+            qDebug() << "Emite en ticket";
+            return emitirDocumentoEnImpresoraTicket(_codigoDocumento,_codigoTipoDocumento,_impresora,cantidadDecimalesMonto,_serieDocumento);
 
         }
 
@@ -2777,7 +2883,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QStri
         query.clear();
 
         /// Obtengo la cantidad de lineas del cuerpo a imprimir
-        if(query.exec("SELECT count(distinct DOC.codigoArticulo) FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {
+        if(query.exec("SELECT count(distinct DOC.codigoArticulo) FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
                     cantidadLineas = query.value(0).toInt();
@@ -2905,7 +3011,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QStri
                         painter.setFont(fuente);
 
                         queryCabezal.clear();
-                        if(queryCabezal.exec("SELECT case when "+query.value(5).toString()+"='' then ' ' else "+query.value(5).toString()+"  end, Doc.codigoCliente,Doc.tipoCliente FROM Documentos Doc left join Clientes C on C.codigoCliente=Doc.codigoCliente and C.tipoCliente=Doc.tipoCliente left join Localidades LOC on LOC.codigoLocalidad=C.codigoLocalidad and LOC.codigoDepartamento=C.codigoDepartamento and LOC.codigoPais=C.codigoPais join TipoDocumento TD on TD.codigoTipoDocumento=Doc.codigoTipoDocumento  where Doc.codigoDocumento='"+_codigoDocumento+"' and Doc.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {
+                        if(queryCabezal.exec("SELECT case when "+query.value(5).toString()+"='' then ' ' else "+query.value(5).toString()+"  end, Doc.codigoCliente,Doc.tipoCliente FROM Documentos Doc left join Clientes C on C.codigoCliente=Doc.codigoCliente and C.tipoCliente=Doc.tipoCliente left join Localidades LOC on LOC.codigoLocalidad=C.codigoLocalidad and LOC.codigoDepartamento=C.codigoDepartamento and LOC.codigoPais=C.codigoPais join TipoDocumento TD on TD.codigoTipoDocumento=Doc.codigoTipoDocumento  where Doc.codigoDocumento='"+_codigoDocumento+"' and Doc.codigoTipoDocumento='"+_codigoTipoDocumento+"' and Doc.serieDocumento='"+_serieDocumento+"'")) {
                             queryCabezal.next();
                             if(queryCabezal.value(0).toString()!=0){
 
@@ -2990,7 +3096,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QStri
                         queryCuerpo.clear();
                         if(query.value(5).toString()=="CANTIDAD"){
 
-                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo,   "+campoSumaONoSumaCantidadLineasSegunCampoOrden+"   FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'  "+campoDeOrdenItemsFacturaOrderOGroupBy+"  ")) {
+                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo,   "+campoSumaONoSumaCantidadLineasSegunCampoOrden+"   FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'  "+campoDeOrdenItemsFacturaOrderOGroupBy+"  ")) {
 
                                 contadorLineas=0;
                                 while(queryCuerpo.next()){
@@ -3024,7 +3130,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QStri
                             }
 
                         }else if(query.value(5).toString()=="precioTotalVenta"){
-                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo, "+campoSumaONoSumaTotalVentaItemsSegunCampoOrden+"  FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'   "+campoDeOrdenItemsFacturaOrderOGroupBy+" ")) {
+                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo, "+campoSumaONoSumaTotalVentaItemsSegunCampoOrden+"  FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'   "+campoDeOrdenItemsFacturaOrderOGroupBy+" ")) {
 
                                 contadorLineas=0;
 
@@ -3055,7 +3161,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QStri
                             }
                         }
                         else if(query.value(5).toString()=="montoDescuento"){
-                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo, "+campoSumaONoSumaDescuentoLineaVentaItemsSegunCampoOrden+"  FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'   "+campoDeOrdenItemsFacturaOrderOGroupBy+" ")) {
+                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo, "+campoSumaONoSumaDescuentoLineaVentaItemsSegunCampoOrden+"  FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'   "+campoDeOrdenItemsFacturaOrderOGroupBy+" ")) {
 
                                 contadorLineas=0;
 
@@ -3087,7 +3193,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QStri
                         }
 
                         else if(query.value(5).toString()=="precioArticuloUnitario"){
-                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo, precioArticuloUnitario  FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'  "+campoDeOrdenItemsFacturaOrderOGroupBy+" ")) {
+                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo, precioArticuloUnitario  FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'  "+campoDeOrdenItemsFacturaOrderOGroupBy+" ")) {
 
                                 contadorLineas=0;
 
@@ -3117,7 +3223,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QStri
                                 }
                             }
                         }else if(query.value(5).toString()=="descripcionArticulo"){
-                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo  FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'  "+campoDeOrdenItemsFacturaOrderOGroupBy+"  ")) {
+                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo  FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'  and DOC.serieDocumento='"+_serieDocumento+"'  "+campoDeOrdenItemsFacturaOrderOGroupBy+"  ")) {
 
                                 contadorLineas=0;
 
@@ -3148,7 +3254,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QStri
                                 }
                             }
                         }else{
-                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo, case when "+query.value(5).toString()+"='' then ' ' else "+query.value(5).toString()+"  end  FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'  "+campoDeOrdenItemsFacturaOrderOGroupBy+" ")) {
+                            if(queryCuerpo.exec("SELECT DOC.codigoArticulo, case when "+query.value(5).toString()+"='' then ' ' else "+query.value(5).toString()+"  end  FROM DocumentosLineas DOC where DOC.codigoDocumento='"+_codigoDocumento+"' and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'  and DOC.serieDocumento='"+_serieDocumento+"'  "+campoDeOrdenItemsFacturaOrderOGroupBy+" ")) {
 
                                 contadorLineas=0;
 
@@ -3203,7 +3309,7 @@ bool ModuloDocumentos::emitirDocumentoEnImpresora(QString _codigoDocumento,QStri
 
                         _montoAGrabar="0"+func_configuracion.retornaCantidadDecimalesString()+"";
                         queryPie.clear();
-                        if(queryPie.exec("SELECT case when "+query.value(5).toString()+"='' then ' ' else "+query.value(5).toString()+"  end FROM Documentos Doc left join Clientes C on C.codigoCliente=Doc.codigoCliente and C.tipoCliente=Doc.tipoCliente join Monedas on Monedas.codigoMoneda=Doc.codigoMonedaDocumento where Doc.codigoDocumento='"+_codigoDocumento+"' and Doc.codigoTipoDocumento='"+_codigoTipoDocumento+"'"))
+                        if(queryPie.exec("SELECT case when "+query.value(5).toString()+"='' then ' ' else "+query.value(5).toString()+"  end FROM Documentos Doc left join Clientes C on C.codigoCliente=Doc.codigoCliente and C.tipoCliente=Doc.tipoCliente join Monedas on Monedas.codigoMoneda=Doc.codigoMonedaDocumento where Doc.codigoDocumento='"+_codigoDocumento+"' and Doc.codigoTipoDocumento='"+_codigoTipoDocumento+"' and Doc.serieDocumento='"+_serieDocumento+"'"))
                         {
                             queryPie.next();
                             if(queryPie.value(0).toString()!=0){
@@ -3367,13 +3473,13 @@ QRectF cuadroTicketRight(double x, double y, double ancho, double alto, QString 
 
 
 
-bool procesarImix(QString _codigoDocumento,QString _codigoTipoDocumento){
+bool procesarImix(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento){
 
     CURL *curl;
     CURLcode res;
     curl_global_init(CURL_GLOBAL_ALL);
 
-    QString str1 = crearJsonIMIX(_codigoDocumento, _codigoTipoDocumento);
+    QString str1 = crearJsonIMIX(_codigoDocumento, _codigoTipoDocumento,_serieDocumento);
 
 
 
@@ -3397,6 +3503,7 @@ bool procesarImix(QString _codigoDocumento,QString _codigoTipoDocumento){
 
     numeroDocumentoV=_codigoDocumento;
     codigoTipoDocumentoV=_codigoTipoDocumento;
+    serieDocumentoV=_serieDocumento;
 
     //  qDebug()<<str1;
 
@@ -3478,7 +3585,7 @@ bool procesarImix(QString _codigoDocumento,QString _codigoTipoDocumento){
 
 
 
-QString crearJsonIMIX(QString _codigoDocumento,QString _codigoTipoDocumento){
+QString crearJsonIMIX(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento){
 
     QString consultaSql = " SELECT ";
     consultaSql +=" TD.descripcionTipoDocumentoCFE'Comprobante', ";
@@ -3514,14 +3621,14 @@ QString crearJsonIMIX(QString _codigoDocumento,QString _codigoTipoDocumento){
 
 
     consultaSql +=" FROM DocumentosLineas DL      ";
-    consultaSql +=" join Documentos DOC on DOC.codigoDocumento=DL.codigoDocumento and DOC.codigoTipoDocumento=DL.codigoTipoDocumento ";
+    consultaSql +=" join Documentos DOC on DOC.codigoDocumento=DL.codigoDocumento and DOC.codigoTipoDocumento=DL.codigoTipoDocumento and DOC.serieDocumento=DL.serieDocumento ";
     consultaSql +=" join Articulos AR on AR.codigoArticulo=DL.codigoArticulo ";
     consultaSql +=" join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento ";
     consultaSql +=" join Monedas MO on MO.codigoMoneda = DOC.codigoMonedaDocumento ";
     consultaSql +=" join Clientes CLI on CLI.codigoCliente=DOC.codigoCliente and CLI.tipoCliente=DOC.tipoCliente ";
     consultaSql +=" join CFE_TipoDocumentoCliente CFETDC on CFETDC.codigoTipoDocumentoCliente=CLI.codigoTipoDocumentoCliente ";
     consultaSql +=" join Pais PA on PA.codigoPais=CLI.codigoPais ";
-    consultaSql +=" where DOC.codigoDocumento="+_codigoDocumento+" and DOC.codigoTipoDocumento="+_codigoTipoDocumento+" and DOC.esDocumentoCFE='1' ";
+    consultaSql +=" where DOC.codigoDocumento="+_codigoDocumento+" and DOC.codigoTipoDocumento="+_codigoTipoDocumento+" and DOC.serieDocumento='"+_serieDocumento+"' and DOC.esDocumentoCFE='1' ";
 
 
     bool conexion=true;
@@ -3652,13 +3759,16 @@ QString crearJsonIMIX(QString _codigoDocumento,QString _codigoTipoDocumento){
 
 
 
-bool procesarDynamia(QString _codigoDocumento,QString _codigoTipoDocumento,QString _numeroDocumentoCFEADevolver,QString _fechaDocumentoCFEADevolver, QString tipoDocumentoCFEADevolver){
+bool procesarDynamia(QString _codigoDocumento,QString _codigoTipoDocumento,QString _numeroDocumentoCFEADevolver,QString _fechaDocumentoCFEADevolver, QString tipoDocumentoCFEADevolver, QString _serieDocumento){
+
+
+    qDebug()<< "procesarDynamia";
 
     CURL *curl;
     CURLcode res;
     curl_global_init(CURL_GLOBAL_ALL);
 
-    QString str1 = crearJsonDynamia(_codigoDocumento, _codigoTipoDocumento,_numeroDocumentoCFEADevolver,_fechaDocumentoCFEADevolver, tipoDocumentoCFEADevolver);
+    QString str1 = crearJsonDynamia(_codigoDocumento, _codigoTipoDocumento,_numeroDocumentoCFEADevolver,_fechaDocumentoCFEADevolver, tipoDocumentoCFEADevolver, _serieDocumento);
 
 
     funcion.loguear("Modo CFE Dynamia: \n\nEnvio a Dynamia:\n"+str1+"\n\n");
@@ -3692,6 +3802,7 @@ bool procesarDynamia(QString _codigoDocumento,QString _codigoTipoDocumento,QStri
 
     numeroDocumentoV=_codigoDocumento;
     codigoTipoDocumentoV=_codigoTipoDocumento;
+    serieDocumentoV=_serieDocumento;
 
     qDebug()<<str1;
 
@@ -3704,6 +3815,7 @@ bool procesarDynamia(QString _codigoDocumento,QString _codigoTipoDocumento,QStri
     headers = curl_slist_append(headers, "charsets: utf-8");
 
     curl = curl_easy_init();
+
     if(curl) {
 
         resultadoFinal="";
@@ -3713,7 +3825,6 @@ bool procesarDynamia(QString _codigoDocumento,QString _codigoTipoDocumento,QStri
         const char *c_produccion = produccion.data();
 
         curl_easy_setopt(curl, CURLOPT_URL, c_produccion);
-
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_HTTPPOST,1);
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
@@ -3784,7 +3895,8 @@ bool procesarDynamia(QString _codigoDocumento,QString _codigoTipoDocumento,QStri
                                                                             nested2["hasta"].toString(),
                                                                             nested["qr"].toString(),
                                                                             nested["idDocGaia"].toString(),
-                                                                            caeTipoDocumentoCFEDescripcionV
+                                                                            caeTipoDocumentoCFEDescripcionV,
+                                                                            _serieDocumento
                                                                             )){
 
 
@@ -3824,7 +3936,10 @@ bool procesarDynamia(QString _codigoDocumento,QString _codigoTipoDocumento,QStri
 
 
 
-QString crearJsonDynamia(QString _codigoDocumento, QString _codigoTipoDocumento,QString _numeroDocumentoCFEADevolver,QString _fechaDocumentoCFEADevolver,QString tipoDocumentoCFEADevolver){
+QString crearJsonDynamia(QString _codigoDocumento, QString _codigoTipoDocumento, QString _numeroDocumentoCFEADevolver, QString _fechaDocumentoCFEADevolver, QString tipoDocumentoCFEADevolver, QString _serieDocumento){
+
+
+    qDebug()<< "crearJsonDynamia";
 
     QString consultaSql = " SELECT ";
 
@@ -3878,7 +3993,7 @@ QString crearJsonDynamia(QString _codigoDocumento, QString _codigoTipoDocumento,
 
     consultaSql +=" FROM DocumentosLineas DL  ";
 
-    consultaSql +=" join Documentos DOC on DOC.codigoDocumento=DL.codigoDocumento and DOC.codigoTipoDocumento=DL.codigoTipoDocumento ";
+    consultaSql +=" join Documentos DOC on DOC.codigoDocumento=DL.codigoDocumento and DOC.codigoTipoDocumento=DL.codigoTipoDocumento and DOC.serieDocumento=DL.serieDocumento ";
     consultaSql +=" join Articulos AR on AR.codigoArticulo=DL.codigoArticulo ";
     consultaSql +=" join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento ";
     consultaSql +=" join Monedas MO on MO.codigoMoneda = DOC.codigoMonedaDocumento ";
@@ -3887,7 +4002,7 @@ QString crearJsonDynamia(QString _codigoDocumento, QString _codigoTipoDocumento,
     consultaSql +=" join Pais PA on PA.codigoPais=CLI.codigoPais ";
     consultaSql +=" join Departamentos DEP on DEP.codigoDepartamento=CLI.codigoDepartamento and DEP.codigoPais=CLI.codigoPais ";
     consultaSql +=" join Ivas IVA on IVA.codigoIva=AR.codigoIva ";
-    consultaSql +=" where DOC.codigoDocumento="+_codigoDocumento+" and DOC.codigoTipoDocumento="+_codigoTipoDocumento+" and DOC.esDocumentoCFE='1' ";
+    consultaSql +=" where DOC.codigoDocumento="+_codigoDocumento+" and DOC.codigoTipoDocumento="+_codigoTipoDocumento+"  and DOC.serieDocumento='"+_serieDocumento+"' and DOC.esDocumentoCFE='1' ";
 
 
     bool conexion=true;
@@ -4175,12 +4290,12 @@ QString crearJsonDynamia(QString _codigoDocumento, QString _codigoTipoDocumento,
 
 
 
-bool ModuloDocumentos::emitirDocumentoCFEImix(QString _codigoDocumento,QString _codigoTipoDocumento, QString _descripcionEstadoActualDocumento){
+bool ModuloDocumentos::emitirDocumentoCFEImix(QString _codigoDocumento,QString _codigoTipoDocumento, QString _descripcionEstadoActualDocumento, QString _serieDocumento){
 
     //Consulto si el modo es 0 = imix, 1 = dynamia
     if(func_CFE_ParametrosGenerales.retornaValor("modoFuncionCFE")=="0"){
 
-        bool resultadoprocesarImix= procesarImix(_codigoDocumento, _codigoTipoDocumento);
+        bool resultadoprocesarImix= procesarImix(_codigoDocumento, _codigoTipoDocumento, _serieDocumento);
 
         //  qDebug()<< resultadoprocesarImix;
 
@@ -4194,14 +4309,14 @@ bool ModuloDocumentos::emitirDocumentoCFEImix(QString _codigoDocumento,QString _
 
             if(_descripcionEstadoActualDocumento=="Pendiente"){
 
-                actualizoEstadoDocumentoCFE(_codigoDocumento, _codigoTipoDocumento,"P");
+                actualizoEstadoDocumentoCFE(_codigoDocumento, _codigoTipoDocumento,"P", _serieDocumento);
 
 
 
                 return false;
             }else{
                 //   Si falla, intento eliminar el documento en la base
-                bool resultado2 = eliminarDocumento(_codigoDocumento, _codigoTipoDocumento);
+                bool resultado2 = eliminarDocumento(_codigoDocumento, _codigoTipoDocumento, _serieDocumento);
 
                 if(resultado2){
                     return false;
@@ -4219,13 +4334,15 @@ bool ModuloDocumentos::emitirDocumentoCFEImix(QString _codigoDocumento,QString _
 
 }
 
-bool ModuloDocumentos::emitirDocumentoCFEDynamia(QString _codigoDocumento,QString _codigoTipoDocumento,QString _numeroDocumentoCFEADevolver,QString _fechaDocumentoCFEADevolver,QString tipoDocumentoCFEADevolver, QString _descripcionEstadoActualDocumento){
+bool ModuloDocumentos::emitirDocumentoCFEDynamia(QString _codigoDocumento,QString _codigoTipoDocumento,QString _numeroDocumentoCFEADevolver,QString _fechaDocumentoCFEADevolver,QString tipoDocumentoCFEADevolver, QString _descripcionEstadoActualDocumento, QString _serieDocumento){
 
+
+    qDebug()<< "emitirDocumentoCFEDynamia";
 
     //Consulto si el modo es 0 = imix, 1 = dynamia
     if(func_CFE_ParametrosGenerales.retornaValor("modoFuncionCFE")=="1"){
 
-        bool resultadoprocesarDynamia= procesarDynamia(_codigoDocumento, _codigoTipoDocumento,_numeroDocumentoCFEADevolver,_fechaDocumentoCFEADevolver,tipoDocumentoCFEADevolver);
+        bool resultadoprocesarDynamia= procesarDynamia(_codigoDocumento, _codigoTipoDocumento,_numeroDocumentoCFEADevolver,_fechaDocumentoCFEADevolver,tipoDocumentoCFEADevolver, _serieDocumento);
 
 
         qDebug()<< resultadoprocesarDynamia;
@@ -4237,13 +4354,13 @@ bool ModuloDocumentos::emitirDocumentoCFEDynamia(QString _codigoDocumento,QStrin
 
             if(_descripcionEstadoActualDocumento=="Pendiente"){
 
-                actualizoEstadoDocumentoCFE(_codigoDocumento, _codigoTipoDocumento,"P");
+                actualizoEstadoDocumentoCFE(_codigoDocumento, _codigoTipoDocumento,"P", _serieDocumento);
 
                 return false;
             }else{
 
                 //   Si falla, intento eliminar el documento en la base
-                bool resultado2 = eliminarDocumento(_codigoDocumento, _codigoTipoDocumento);
+                bool resultado2 = eliminarDocumento(_codigoDocumento, _codigoTipoDocumento, _serieDocumento);
 
                 if(resultado2){
                     return false;

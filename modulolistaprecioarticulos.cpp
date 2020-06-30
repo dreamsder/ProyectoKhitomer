@@ -304,7 +304,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT DOCLL.costoArticuloMonedaReferencia FROM Documentos DOC join DocumentosLineas DOCLL on DOCLL.codigoDocumento=DOC.codigoDocumento and DOCLL.codigoTipoDocumento=DOC.codigoTipoDocumento where DOC.codigoEstadoDocumento in ('E','G') and DOCLL.codigoArticulo='"+_codigoArticulo+"' and DOCLL.costoArticuloMonedaReferencia!=0 order by DOCLL.fechaHoraGuardadoLineaSQL desc limit 1")) {
+        if(query.exec("SELECT DOCLL.costoArticuloMonedaReferencia FROM Documentos DOC join DocumentosLineas DOCLL on DOCLL.codigoDocumento=DOC.codigoDocumento and DOCLL.codigoTipoDocumento=DOC.codigoTipoDocumento and DOCLL.serieDocumento=DOC.serieDocumento where DOC.codigoEstadoDocumento in ('E','G') and DOCLL.codigoArticulo='"+_codigoArticulo+"' and DOCLL.costoArticuloMonedaReferencia!=0 order by DOCLL.fechaHoraGuardadoLineaSQL desc limit 1")) {
             if(query.first()){
                 if(query.value(0).toString()!=""){
 
@@ -335,7 +335,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT DOCLL.precioArticuloUnitario FROM Documentos DOC join DocumentosLineas DOCLL on  DOCLL.codigoDocumento=DOC.codigoDocumento and DOCLL.codigoTipoDocumento=DOC.codigoTipoDocumento join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento where TD.utilizaSoloProveedores=1 and DOC.codigoEstadoDocumento in ('E','G') and DOCLL.codigoArticulo='"+_codigoArticulo+"' and DOCLL.costoArticuloMonedaReferencia!=0 order by DOCLL.fechaHoraGuardadoLineaSQL desc limit 1")) {
+        if(query.exec("SELECT DOCLL.precioArticuloUnitario FROM Documentos DOC join DocumentosLineas DOCLL on  DOCLL.codigoDocumento=DOC.codigoDocumento and DOCLL.codigoTipoDocumento=DOC.codigoTipoDocumento and DOCLL.serieDocumento=DOC.serieDocumento join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento where TD.utilizaSoloProveedores=1 and DOC.codigoEstadoDocumento in ('E','G') and DOCLL.codigoArticulo='"+_codigoArticulo+"' and DOCLL.costoArticuloMonedaReferencia!=0 order by DOCLL.fechaHoraGuardadoLineaSQL desc limit 1")) {
             if(query.first()){
                 if(query.value(0).toString()!=""){
 
@@ -366,7 +366,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT MON.simboloMoneda FROM Documentos DOC join DocumentosLineas DOCLL on  DOCLL.codigoDocumento=DOC.codigoDocumento and DOCLL.codigoTipoDocumento=DOC.codigoTipoDocumento join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento  join Monedas MON on MON.codigoMoneda=DOC.codigoMonedaDocumento   where TD.utilizaSoloProveedores=1 and DOC.codigoEstadoDocumento in ('E','G') and DOCLL.codigoArticulo='"+_codigoArticulo+"' and DOCLL.costoArticuloMonedaReferencia!=0  order by DOCLL.fechaHoraGuardadoLineaSQL desc limit 1")) {
+        if(query.exec("SELECT MON.simboloMoneda FROM Documentos DOC join DocumentosLineas DOCLL on  DOCLL.codigoDocumento=DOC.codigoDocumento and DOCLL.codigoTipoDocumento=DOC.codigoTipoDocumento and DOCLL.serieDocumento=DOC.serieDocumento join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento  join Monedas MON on MON.codigoMoneda=DOC.codigoMonedaDocumento   where TD.utilizaSoloProveedores=1 and DOC.codigoEstadoDocumento in ('E','G') and DOCLL.codigoArticulo='"+_codigoArticulo+"' and DOCLL.costoArticuloMonedaReferencia!=0  order by DOCLL.fechaHoraGuardadoLineaSQL desc limit 1")) {
             if(query.first()){
                 if(query.value(0).toString()!=""){
 

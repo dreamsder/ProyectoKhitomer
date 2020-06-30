@@ -583,7 +583,7 @@ Rectangle {
         anchors.rightMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 20
-        spacing: 15
+        spacing: distanciaEntreBotonesBarraDeTareas
 
         BotonBarraDeHerramientas {
             id: botonNuevaLiquidacion

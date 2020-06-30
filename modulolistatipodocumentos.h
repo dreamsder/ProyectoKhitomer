@@ -73,7 +73,9 @@ public:
                                const QString &noAfectaIva,
                                const QString &utilizaSeteoDePreciosEnListasDePrecioPorArticulo,
 
-                               const QString &noPermiteFacturarConStockPrevistoCero
+                               const QString &noPermiteFacturarConStockPrevistoCero,
+                               const QString &imprimeEnFormatoTicket,
+                               const QString &imprimeObservacionesEnTicket
 
                                );
 
@@ -123,6 +125,11 @@ public:
     QString utilizaSeteoDePreciosEnListasDePrecioPorArticulo() const;
 
     QString noPermiteFacturarConStockPrevistoCero()const;
+
+    QString imprimeEnFormatoTicket()const;
+
+    QString imprimeObservacionesEnTicket()const;
+
 
 
 
@@ -178,8 +185,9 @@ private:
     QString m_noPermiteFacturarConStockPrevistoCero;
 
 
+    QString m_imprimeEnFormatoTicket;
 
-
+    QString m_imprimeObservacionesEnTicket;
 
 };
 
@@ -231,7 +239,9 @@ public:
         utilizaFormasDePagoRole,
         noAfectaIvaRole,
         utilizaSeteoDePreciosEnListasDePrecioPorArticuloRole,
-        noPermiteFacturarConStockPrevistoCeroRole
+        noPermiteFacturarConStockPrevistoCeroRole,
+        imprimeEnFormatoTicketRole,
+        imprimeObservacionesEnTicketRole
 
 
 
@@ -312,7 +322,7 @@ public:
             QString,
             QString,
             QString,
-            QString, QString );
+            QString, QString,QString, QString );
 
 
 
@@ -322,7 +332,7 @@ public:
 
     Q_INVOKABLE bool retornaDocumentoSegunMonedaRedondea(QString ,QString ) const;
 
-    Q_INVOKABLE bool retornaPermiteModificacionMedioPagoPorDeudaContado(QString ,QString ) const;
+    Q_INVOKABLE bool retornaPermiteModificacionMedioPagoPorDeudaContado(QString ,QString,QString ) const;
 
 
 

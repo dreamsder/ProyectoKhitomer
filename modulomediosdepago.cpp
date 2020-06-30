@@ -328,6 +328,7 @@ bool ModuloMediosDePago::guardarLineaMedioDePago(QString _codigoDocumento,QStrin
                                                  ,QString _numeroLineaDocumentoCheque
                                                  ,QString _numeroCuentaBancaria
                                                  ,QString _codigoBancoCuentaBancaria
+                                                 ,QString _serieDocumento
                                                  ) const {
 
 
@@ -348,7 +349,7 @@ bool ModuloMediosDePago::guardarLineaMedioDePago(QString _codigoDocumento,QStrin
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("insert INTO DocumentosLineasPago (codigoDocumento, codigoTipoDocumento, numeroLinea, codigoMedioPago, monedaMedioPago, importePago, cuotas,codigoBanco,codigoTarjetaCredito,numeroCheque, codigoTipoCheque, fechaCheque,documentoChequeDiferido, tipoDocumentoChequeDiferido,lineaDocumentoChequeDiferido, numeroCuentaBancaria,codigoBancoCuentaBancaria)values('"+_codigoDocumento+"','"+_codigoTipoDocumento+"','"+_numeroLinea+"','"+_codigoMedioPago+"','"+_monedaMedioPago+"','"+_importePago+"','"+_cuotas+"','"+_codigoBanco+"','"+_codigoTarjetaCredito+"','"+_numeroCheque+"','"+_codigoTipoCheque+"','"+_fechaCheque+"','"+_codigoDocumentoCheque+"','"+_codigoTipoDocumentoCheque+"','"+_numeroLineaDocumentoCheque+"','"+_numeroCuentaBancaria+"','"+_codigoBancoCuentaBancaria+"')")){
+        if(query.exec("insert INTO DocumentosLineasPago (codigoDocumento, codigoTipoDocumento, numeroLinea, codigoMedioPago, monedaMedioPago, importePago, cuotas,codigoBanco,codigoTarjetaCredito,numeroCheque, codigoTipoCheque, fechaCheque,documentoChequeDiferido, tipoDocumentoChequeDiferido,lineaDocumentoChequeDiferido, numeroCuentaBancaria,codigoBancoCuentaBancaria,serieDocumento)values('"+_codigoDocumento+"','"+_codigoTipoDocumento+"','"+_numeroLinea+"','"+_codigoMedioPago+"','"+_monedaMedioPago+"','"+_importePago+"','"+_cuotas+"','"+_codigoBanco+"','"+_codigoTarjetaCredito+"','"+_numeroCheque+"','"+_codigoTipoCheque+"','"+_fechaCheque+"','"+_codigoDocumentoCheque+"','"+_codigoTipoDocumentoCheque+"','"+_numeroLineaDocumentoCheque+"','"+_numeroCuentaBancaria+"','"+_codigoBancoCuentaBancaria+"','"+_serieDocumento+"' )")){
             return true;
         }else{
             return false;
@@ -358,7 +359,7 @@ bool ModuloMediosDePago::guardarLineaMedioDePago(QString _codigoDocumento,QStrin
     }
 }
 
-bool ModuloMediosDePago::eliminarLineaMedioDePagoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{
+bool ModuloMediosDePago::eliminarLineaMedioDePagoDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{
 
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
@@ -373,7 +374,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("delete from DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")){
+        if(query.exec("delete from DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")){
 
             return true;
 
@@ -384,7 +385,7 @@ Database::chequeaStatusAccesoMysql();
         return false;
     }
 }
-int ModuloMediosDePago::retornaCantidadLineasMedioDePago(QString _codigoDocumento,QString _codigoTipoDocumento) const{
+int ModuloMediosDePago::retornaCantidadLineasMedioDePago(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -398,7 +399,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT count(*) FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {
+        if(query.exec("SELECT count(*) FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
                     return query.value(0).toInt();
@@ -414,7 +415,7 @@ Database::chequeaStatusAccesoMysql();
     }
 }
 
-QString ModuloMediosDePago::retornoCodigoMedioPago(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoCodigoMedioPago(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 
 Database::chequeaStatusAccesoMysql();
@@ -429,7 +430,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT codigoMedioPago FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT codigoMedioPago FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -447,7 +448,7 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-QString ModuloMediosDePago::retornoMonedaMedioPago(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoMonedaMedioPago(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 
 Database::chequeaStatusAccesoMysql();
@@ -462,7 +463,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT monedaMedioPago FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT monedaMedioPago FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -478,7 +479,7 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-double ModuloMediosDePago::retornoImportePago(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+double ModuloMediosDePago::retornoImportePago(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 
 Database::chequeaStatusAccesoMysql();
@@ -493,7 +494,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT importePago FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT importePago FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'  and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -511,7 +512,7 @@ Database::chequeaStatusAccesoMysql();
         return 0.00;
     }
 }
-QString ModuloMediosDePago::retornoCuotas(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoCuotas(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -524,7 +525,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT cuotas FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT cuotas FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'  and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -542,7 +543,7 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-QString ModuloMediosDePago::retornoCodigoTarjetaCredito(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoCodigoTarjetaCredito(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
     Database::chequeaStatusAccesoMysql();
 
@@ -556,7 +557,7 @@ QString ModuloMediosDePago::retornoCodigoTarjetaCredito(QString _codigoDocumento
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT codigoTarjetaCredito FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT codigoTarjetaCredito FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'  and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -574,7 +575,7 @@ QString ModuloMediosDePago::retornoCodigoTarjetaCredito(QString _codigoDocumento
         return "";
     }
 }
-QString ModuloMediosDePago::retornoCodigoBanco(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoCodigoBanco(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -587,7 +588,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT codigoBanco FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT codigoBanco FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'  and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -605,7 +606,7 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-QString ModuloMediosDePago::retornoNumeroCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoNumeroCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -618,7 +619,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT numeroCheque FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT numeroCheque FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -634,7 +635,7 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-QString ModuloMediosDePago::retornoTipoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoTipoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -647,7 +648,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT codigoTipoCheque FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT codigoTipoCheque FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -663,7 +664,7 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-QString ModuloMediosDePago::retornoFechaCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoFechaCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -676,7 +677,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT fechaCheque FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT fechaCheque FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -692,7 +693,7 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-QString ModuloMediosDePago::retornoCodigoDocumentoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoCodigoDocumentoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -705,7 +706,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT documentoChequeDiferido FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT documentoChequeDiferido FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'  and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -721,7 +722,7 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-QString ModuloMediosDePago::retornoCodigoTipoDocumentoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoCodigoTipoDocumentoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -734,7 +735,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT tipoDocumentoChequeDiferido FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT tipoDocumentoChequeDiferido FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'  and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -750,7 +751,8 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-QString ModuloMediosDePago::retornoCuentaBancaria(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+
+QString ModuloMediosDePago::retornoSerieDocumentoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -763,7 +765,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT numeroCuentaBancaria FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT serieDocumento FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'  and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -779,7 +781,9 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-QString ModuloMediosDePago::retornoBancoCuentaBancaria(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+
+
+QString ModuloMediosDePago::retornoCuentaBancaria(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -792,7 +796,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT codigoBancoCuentaBancaria FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT numeroCuentaBancaria FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"' and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -808,7 +812,7 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-QString ModuloMediosDePago::retornoNumeroLineaDocumentoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoBancoCuentaBancaria(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -821,7 +825,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT lineaDocumentoChequeDiferido FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT codigoBancoCuentaBancaria FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'  and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 
@@ -837,7 +841,7 @@ Database::chequeaStatusAccesoMysql();
         return "";
     }
 }
-bool ModuloMediosDePago::retornoEsDiferidoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea) {
+QString ModuloMediosDePago::retornoNumeroLineaDocumentoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -850,7 +854,36 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("SELECT codigoTipoCheque FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'")) {
+        if(query.exec("SELECT lineaDocumentoChequeDiferido FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'  and serieDocumento='"+_serieDocumento+"'")) {
+            if(query.first()){
+                if(query.value(0).toString()!=0){
+
+                    return query.value(0).toString();
+                }else{
+                    return "";
+                }
+            }else{return "";}
+        }else{
+            return "";
+        }
+    }else{
+        return "";
+    }
+}
+bool ModuloMediosDePago::retornoEsDiferidoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento) {
+    bool conexion=true;
+Database::chequeaStatusAccesoMysql();
+    if(!Database::connect().isOpen()){
+        if(!Database::connect().open()){
+            qDebug() << "No conecto";
+            conexion=false;
+        }
+    }
+    if(conexion){
+
+        QSqlQuery query(Database::connect());
+
+        if(query.exec("SELECT codigoTipoCheque FROM DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and numeroLinea='"+_linea+"'  and serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=0){
 

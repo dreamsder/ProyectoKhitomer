@@ -143,6 +143,10 @@ public:
         return m_CODIGO_BARRAS_A_DEMANDA_EXTENDIDO;
     }
 
+    static QString getDISTANCIAENTREBOTONESMENU(){
+        return m_DISTANCIAENTREBOTONESMENU;
+    }
+
 
 
 
@@ -174,6 +178,8 @@ private:
     static QString m_MUESTRA_DESCRIPCION_ARTICULO_EXTENDIDA_FACTURACION;
     static QString m_MODO_CFE;
     static QString m_CODIGO_BARRAS_A_DEMANDA_EXTENDIDO;
+    static QString m_DISTANCIAENTREBOTONESMENU;
+
 
 
     static void setCANTIDAD_DIGITOS_DECIMALES_MONTO(QString value){
@@ -242,6 +248,10 @@ private:
     static void setCODIGO_BARRAS_A_DEMANDA_EXTENDIDO(QString value){
         m_CODIGO_BARRAS_A_DEMANDA_EXTENDIDO=value;
     }
+    static void setDISTANCIAENTREBOTONESMENU(QString value){
+        m_DISTANCIAENTREBOTONESMENU=value;
+    }
+
 
 
 };

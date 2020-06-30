@@ -290,6 +290,8 @@ bool Modulo_CFE_ParametrosGenerales::cargarLogoImpresora() {
 
         QString encoded = QString(image.toBase64());
 
+     //   qDebug()<< encoded;
+
         if(encoded.trimmed()!=""){
             if(actualizarDatoParametroCFEImagen(encoded,"logoImpresoraTicket")){
                 funcionesMensaje.mensajeAdvertenciaOk("Logo cargado correctamente en el sistema");

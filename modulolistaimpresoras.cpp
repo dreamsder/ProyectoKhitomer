@@ -64,6 +64,11 @@ void ModuloListaImpresoras::limpiarListaImpresoras(){
 
 void ModuloListaImpresoras::buscarImpresoras(){
 
+
+    list = QPrinterInfo::availablePrinters();
+    list = QPrinterInfo::availablePrinters();
+    list = QPrinterInfo::availablePrinters();
+
     int totallist=list.count();
 
     if(totallist!=0)

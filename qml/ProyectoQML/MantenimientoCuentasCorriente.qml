@@ -57,6 +57,11 @@ Rectangle {
     property string _codigoTipoClienteDePago: ""
     property string _codigoMonedaDePago: ""
 
+    property string _serieDocumentoAPagar: ""
+    property string _serieDocumentoDePago: ""
+
+
+
     property double montoADescontarFactura: 0.00
 
 
@@ -110,7 +115,8 @@ Rectangle {
                                                     //monedaMedioPago:modeloLineasDePagoTarjetasCredito.retornamonedaMedioPago(j),
                                                     //  simboloMonedaMedioDePago: modeloListaMonedas.retornaSimboloMoneda(modeloLineasDePagoTarjetasCredito.retornamonedaMedioPago(j)),
 
-                                                    checkboxActivo:false
+                                                    checkboxActivo:false,
+                                                    serieDocumento:modeloDocumentosConSaldoCuentaCorriente.retornaSerieDocumentoPorIndice(j)
                                                 })
         }
     }
@@ -195,7 +201,8 @@ Rectangle {
                                                   //monedaMedioPago:modeloLineasDePagoTarjetasCredito.retornamonedaMedioPago(j),
                                                   //  simboloMonedaMedioDePago: modeloListaMonedas.retornaSimboloMoneda(modeloLineasDePagoTarjetasCredito.retornamonedaMedioPago(j)),
 
-                                                  checkboxActivo:false
+                                                  checkboxActivo:false,
+                                                  serieDocumento:modeloDocumentosDePagoCuentaCorriente.retornaSerieDocumentoPorIndice(j)
                                               })
         }
     }
@@ -269,6 +276,10 @@ Rectangle {
                 _codigoMonedaAPagar= cbListaMonedasDeDocumentosCuentaCorriente.codigoValorSeleccion.trim();
 
 
+                _serieDocumentoAPagar=modeloListaDocumentoConDeuda.get(i).serieDocumento
+
+
+
                 break;
             }
         }
@@ -281,6 +292,7 @@ Rectangle {
                 _codigoClienteDePago= cbCodigoClienteCuentaCorriente.textoInputBox.trim();
                 _codigoTipoClienteDePago= cbTipoClienteCuentaCorriente.codigoValorSeleccion.trim();
                 _codigoMonedaDePago= cbListaMonedasDeDocumentosCuentaCorriente.codigoValorSeleccion.trim();
+                _serieDocumentoDePago=modeloListaDocumentoDePago.get(i).serieDocumento;
                 break;
             }
         }
@@ -747,8 +759,11 @@ Rectangle {
                                                                                                       _codigoMonedaAPagar,
                                                                                                       _codigoDocumentoDePago,_codigoTipoDocumentoDePago,
                                                                                                       _codigoClienteDePago,_codigoTipoClienteDePago,
-                                                                                                      _codigoMonedaDePago,montoADescontarFactura,montoDelSaldo
+                                                                                                      _codigoMonedaDePago,montoADescontarFactura,montoDelSaldo,
+                                                                                                      _serieDocumentoAPagar,_serieDocumentoDePago
                                                                                                       );
+
+
 
                     if(resultado==0){
                         txtMensajeInformacionArticulos.color="#d93e3e"
@@ -790,7 +805,7 @@ Rectangle {
         anchors.rightMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 20
-        spacing: 15
+        spacing: distanciaEntreBotonesBarraDeTareas
 
         BotonBarraDeHerramientas {
             id: botonNuevoFiltro

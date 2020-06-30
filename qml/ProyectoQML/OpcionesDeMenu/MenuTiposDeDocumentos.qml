@@ -75,6 +75,10 @@ Rectangle {
         cbxListaModelosDeImpresion.textoComboBox=""
         cbxListaModelosDeImpresion.codigoValorSeleccion=""
 
+        chbEmitenEnImpresorasTicket.setActivo(false)
+
+        chbEmiteObservacionesEnImpresorasTicket.setActivo(false)
+
         cbxModoAfectaCuentaCorrienteDinero.textoComboBox=qsTr("No afecta CC")
         cbxModoAfectaCuentaCorrienteDinero.codigoValorSeleccion="0"
         cbxModoAfectaCuentaCorrienteMercaderia.textoComboBox=qsTr("No afecta CC")
@@ -149,6 +153,7 @@ Rectangle {
             z: 7
             onClic: {
 
+
                 txtMensajeInformacion.visible=true
                 txtMensajeInformacionTimer.stop()
                 txtMensajeInformacionTimer.start()
@@ -195,6 +200,9 @@ Rectangle {
 
                 var _chbNoAfectaElIvaTipoDocumentos=0
 
+                var _chbEmitenEnImpresorasTicket=0
+
+                var _chbEmiteObservacionesEnImpresorasTicket=0
 
 
                 if(chbPermitIngresoDeArticulosTipoDocumentos.chekActivo){_chbPermitIngresoDeArticulosTipoDocumentos    =1}
@@ -217,6 +225,10 @@ Rectangle {
                 if(chbUtilizaCuentasBancarias.chekActivo){    _chbUtilizaCuentasBancarias    =1}
                 if(chbPermitechequesEnCajaParaPagoAProveedores.chekActivo){   _chbPermitechequesEnCajaParaPagoAProveedores    =1}
                 if(chbUtilizaSoloMedioPagoCheque.chekActivo){   _chbUtilizaSoloMedioPagoCheque    =1}
+                if(chbEmitenEnImpresorasTicket.chekActivo){   _chbEmitenEnImpresorasTicket    =1}
+                if(chbEmiteObservacionesEnImpresorasTicket.chekActivo){   _chbEmiteObservacionesEnImpresorasTicket    =1}
+
+
                 if(chbEsDocumentoDeVenta.chekActivo){  _chbEsDocumentoDeVenta    =1}
                 if(chbpermiteOperarConArticulosInactivosTipoDocumento.chekActivo){_chbpermiteOperarConArticulosInactivosTipoDocumento    =1}
                 if(chbUtilizaRedondeoDelTotalTipoDocumentos.chekActivo){  _chbUtilizaRedondeoDelTotalTipoDocumentos    =1}
@@ -274,7 +286,9 @@ Rectangle {
                             _chbUtilizaFormaDePagoTipoDocumentos,
                             _chbNoAfectaElIvaTipoDocumentos,
                             _chbSolicitarIngresoPrecioEnListasDePrecioTipoDocumento,
-                            _chbNoPermiteFacturarConStockPrevistoCero
+                            _chbNoPermiteFacturarConStockPrevistoCero,
+                            _chbEmitenEnImpresorasTicket,
+                            _chbEmiteObservacionesEnImpresorasTicket
 
                             )
 
@@ -668,6 +682,12 @@ Rectangle {
                             y: 73
                             tamanioLetra: 12
                             textoValor: qsTr("Utiliza observaciones")
+                        }
+
+
+                        CheckBox {
+                            id: chbEmiteObservacionesEnImpresorasTicket
+                            textoValor: qsTr("Imprime observaciones en ticket")
                         }
 
                         CheckBox {
@@ -1558,7 +1578,6 @@ Rectangle {
                                     codigoItem: "3"
                                 }
                             }
-
                         }
                         ComboBoxGenerico {
                             id: cbxListaModelosDeImpresion
@@ -1571,6 +1590,10 @@ Rectangle {
                             modeloItems: modeloModelosDeImpresion
                             z: 1
                         }
+                        CheckBox {
+                            id: chbEmitenEnImpresorasTicket
+                            textoValor: qsTr("Emite en impresora de ticket")
+                        }                        
                     }
 
                     Rectangle {

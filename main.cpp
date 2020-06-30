@@ -178,6 +178,12 @@ int main(int argc, char *argv[])
 
 
     ModuloListaImpresoras moduloListaImpresoras;
+
+
+    moduloListaImpresoras.buscarImpresoras();
+    moduloListaImpresoras.buscarImpresoras();
+
+
     ModuloDocumentos moduloDocumentos;
     ModuloDocumentos moduloDocumentosEnLiquidaciones;
     ModuloDocumentos moduloDocumentosMantenimiento;
@@ -505,6 +511,8 @@ inicio:
     moduloReportesMenu.buscarReportesMenu("1=","1","");
 
     moduloReportes.buscarReportes("1=","1","");
+
+    moduloListaImpresoras.limpiarListaImpresoras();
     moduloListaImpresoras.buscarImpresoras();
     moduloSubRubrosComboBox.buscarSubRubros("1=","1");
     moduloRubrosComboBox.buscarRubros("1=","1");

@@ -203,23 +203,28 @@ Rectangle {
             text: "Cargar logo Ticket"
             border.color: "#787777"
             colorTextoMensajeError: "White"
-
             onClicked: {
-
                 if(modelo_CFE_ParametrosGenerales.cargarLogoImpresora()){
                     imgLogoImpresora.source="data:image/png;base64," + modelo_CFE_ParametrosGenerales.retornaValor("logoImpresoraTicket")
                 }
-
-
             }
         }
-
         Image {
             id: imgLogoImpresora
             width: 212
             height: 70
+            source:{
 
-            source: "data:image/png;base64," + modelo_CFE_ParametrosGenerales.retornaValor("logoImpresoraTicket")
+                if(modelo_CFE_ParametrosGenerales.retornaValor("logoImpresoraTicket")==""){
+                    ""
+                }else{
+                    "data:image/png;base64," + modelo_CFE_ParametrosGenerales.retornaValor("logoImpresoraTicket")
+                }
+
+            }
+
+
+
         }
     }
 

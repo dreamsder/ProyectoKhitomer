@@ -22,7 +22,7 @@ static const uint qt_meta_data_ModuloMediosDePago[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      31,   14, // methods
+      32,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -43,24 +43,25 @@ static const uint qt_meta_data_ModuloMediosDePago[] = {
      321,   19,  242,   19, 0x02,
      360,   19,  352,   19, 0x02,
      399,   19,  352,   19, 0x02,
-     450,  433,  242,   19, 0x02,
-     611,  204,  242,   19, 0x02,
-     662,  204,   94,   19, 0x02,
-     715,  712,  352,   19, 0x02,
-     761,  712,  754,   19, 0x02,
-     805,  712,  352,   19, 0x02,
-     853,  712,  352,   19, 0x02,
-     901,  712,  352,   19, 0x02,
-     954,  712,  352,   19, 0x02,
-     998,  712,  352,   19, 0x02,
-    1043,  712,  352,   19, 0x02,
-    1087,  712,  352,   19, 0x02,
-    1130,  712,  352,   19, 0x02,
-    1177,  712,  352,   19, 0x02,
-    1229,  712,  352,   19, 0x02,
-    1283,  712,  242,   19, 0x02,
-    1332,  712,  352,   19, 0x02,
-    1390,  712,  352,   19, 0x02,
+     466,  433,  242,   19, 0x02,
+     638,  635,  242,   19, 0x02,
+     715,  697,   94,   19, 0x02,
+     792,  773,  352,   19, 0x02,
+     846,  773,  839,   19, 0x02,
+     898,  773,  352,   19, 0x02,
+     954,  773,  352,   19, 0x02,
+    1010,  773,  352,   19, 0x02,
+    1071,  773,  352,   19, 0x02,
+    1123,  773,  352,   19, 0x02,
+    1176,  773,  352,   19, 0x02,
+    1228,  773,  352,   19, 0x02,
+    1279,  773,  352,   19, 0x02,
+    1334,  773,  352,   19, 0x02,
+    1394,  773,  352,   19, 0x02,
+    1456,  773,  242,   19, 0x02,
+    1513,  773,  352,   19, 0x02,
+    1579,  773,  352,   19, 0x02,
+    1707, 1646,  352,   19, 0x02,
 
        0        // eod
 };
@@ -79,27 +80,31 @@ static const char qt_meta_stringdata_ModuloMediosDePago[] = {
     "utilizaCuentaBancaria(QString)\0QString\0"
     "retornaDescripcionMedioDePago(QString)\0"
     "retornaMonedaMedioDePago(QString)\0"
-    ",,,,,,,,,,,,,,,,\0"
+    ",,,,,,,,,,,,,,,,,_serieDocumento\0"
     "guardarLineaMedioDePago(QString,QString,QString,QString,QString,QStrin"
     "g,QString,QString,QString,QString,QString,QString,QString,QString,QStr"
-    "ing,QString,QString)\0"
-    "eliminarLineaMedioDePagoDocumento(QString,QString)\0"
-    "retornaCantidadLineasMedioDePago(QString,QString)\0"
-    ",,\0retornoCuotas(QString,QString,QString)\0"
-    "double\0retornoImportePago(QString,QString,QString)\0"
-    "retornoMonedaMedioPago(QString,QString,QString)\0"
-    "retornoCodigoMedioPago(QString,QString,QString)\0"
-    "retornoCodigoTarjetaCredito(QString,QString,QString)\0"
-    "retornoCodigoBanco(QString,QString,QString)\0"
-    "retornoNumeroCheque(QString,QString,QString)\0"
-    "retornoFechaCheque(QString,QString,QString)\0"
-    "retornoTipoCheque(QString,QString,QString)\0"
-    "retornoCuentaBancaria(QString,QString,QString)\0"
-    "retornoBancoCuentaBancaria(QString,QString,QString)\0"
-    "retornoCodigoDocumentoCheque(QString,QString,QString)\0"
-    "retornoEsDiferidoCheque(QString,QString,QString)\0"
-    "retornoCodigoTipoDocumentoCheque(QString,QString,QString)\0"
-    "retornoNumeroLineaDocumentoCheque(QString,QString,QString)\0"
+    "ing,QString,QString,QString)\0"
+    ",,\0eliminarLineaMedioDePagoDocumento(QString,QString,QString)\0"
+    ",,_serieDocumento\0"
+    "retornaCantidadLineasMedioDePago(QString,QString,QString)\0"
+    ",,,_serieDocumento\0"
+    "retornoCuotas(QString,QString,QString,QString)\0"
+    "double\0retornoImportePago(QString,QString,QString,QString)\0"
+    "retornoMonedaMedioPago(QString,QString,QString,QString)\0"
+    "retornoCodigoMedioPago(QString,QString,QString,QString)\0"
+    "retornoCodigoTarjetaCredito(QString,QString,QString,QString)\0"
+    "retornoCodigoBanco(QString,QString,QString,QString)\0"
+    "retornoNumeroCheque(QString,QString,QString,QString)\0"
+    "retornoFechaCheque(QString,QString,QString,QString)\0"
+    "retornoTipoCheque(QString,QString,QString,QString)\0"
+    "retornoCuentaBancaria(QString,QString,QString,QString)\0"
+    "retornoBancoCuentaBancaria(QString,QString,QString,QString)\0"
+    "retornoCodigoDocumentoCheque(QString,QString,QString,QString)\0"
+    "retornoEsDiferidoCheque(QString,QString,QString,QString)\0"
+    "retornoCodigoTipoDocumentoCheque(QString,QString,QString,QString)\0"
+    "retornoNumeroLineaDocumentoCheque(QString,QString,QString,QString)\0"
+    "_codigoDocumento,_codigoTipoDocumento,_linea,_serieDocumento\0"
+    "retornoSerieDocumentoCheque(QString,QString,QString,QString)\0"
 };
 
 void ModuloMediosDePago::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -131,41 +136,43 @@ void ModuloMediosDePago::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
         case 12: { QString _r = _t->retornaMonedaMedioDePago((*reinterpret_cast< QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 13: { bool _r = _t->guardarLineaMedioDePago((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])),(*reinterpret_cast< QString(*)>(_a[5])),(*reinterpret_cast< QString(*)>(_a[6])),(*reinterpret_cast< QString(*)>(_a[7])),(*reinterpret_cast< QString(*)>(_a[8])),(*reinterpret_cast< QString(*)>(_a[9])),(*reinterpret_cast< QString(*)>(_a[10])),(*reinterpret_cast< QString(*)>(_a[11])),(*reinterpret_cast< QString(*)>(_a[12])),(*reinterpret_cast< QString(*)>(_a[13])),(*reinterpret_cast< QString(*)>(_a[14])),(*reinterpret_cast< QString(*)>(_a[15])),(*reinterpret_cast< QString(*)>(_a[16])),(*reinterpret_cast< QString(*)>(_a[17])));
+        case 13: { bool _r = _t->guardarLineaMedioDePago((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])),(*reinterpret_cast< QString(*)>(_a[5])),(*reinterpret_cast< QString(*)>(_a[6])),(*reinterpret_cast< QString(*)>(_a[7])),(*reinterpret_cast< QString(*)>(_a[8])),(*reinterpret_cast< QString(*)>(_a[9])),(*reinterpret_cast< QString(*)>(_a[10])),(*reinterpret_cast< QString(*)>(_a[11])),(*reinterpret_cast< QString(*)>(_a[12])),(*reinterpret_cast< QString(*)>(_a[13])),(*reinterpret_cast< QString(*)>(_a[14])),(*reinterpret_cast< QString(*)>(_a[15])),(*reinterpret_cast< QString(*)>(_a[16])),(*reinterpret_cast< QString(*)>(_a[17])),(*reinterpret_cast< QString(*)>(_a[18])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 14: { bool _r = _t->eliminarLineaMedioDePagoDocumento((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
+        case 14: { bool _r = _t->eliminarLineaMedioDePagoDocumento((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 15: { int _r = _t->retornaCantidadLineasMedioDePago((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
+        case 15: { int _r = _t->retornaCantidadLineasMedioDePago((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
-        case 16: { QString _r = _t->retornoCuotas((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 16: { QString _r = _t->retornoCuotas((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 17: { double _r = _t->retornoImportePago((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 17: { double _r = _t->retornoImportePago((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< double*>(_a[0]) = _r; }  break;
-        case 18: { QString _r = _t->retornoMonedaMedioPago((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 18: { QString _r = _t->retornoMonedaMedioPago((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 19: { QString _r = _t->retornoCodigoMedioPago((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 19: { QString _r = _t->retornoCodigoMedioPago((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 20: { QString _r = _t->retornoCodigoTarjetaCredito((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 20: { QString _r = _t->retornoCodigoTarjetaCredito((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 21: { QString _r = _t->retornoCodigoBanco((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 21: { QString _r = _t->retornoCodigoBanco((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 22: { QString _r = _t->retornoNumeroCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 22: { QString _r = _t->retornoNumeroCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 23: { QString _r = _t->retornoFechaCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 23: { QString _r = _t->retornoFechaCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 24: { QString _r = _t->retornoTipoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 24: { QString _r = _t->retornoTipoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 25: { QString _r = _t->retornoCuentaBancaria((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 25: { QString _r = _t->retornoCuentaBancaria((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 26: { QString _r = _t->retornoBancoCuentaBancaria((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 26: { QString _r = _t->retornoBancoCuentaBancaria((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 27: { QString _r = _t->retornoCodigoDocumentoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 27: { QString _r = _t->retornoCodigoDocumentoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 28: { bool _r = _t->retornoEsDiferidoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 28: { bool _r = _t->retornoEsDiferidoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 29: { QString _r = _t->retornoCodigoTipoDocumentoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 29: { QString _r = _t->retornoCodigoTipoDocumentoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 30: { QString _r = _t->retornoNumeroLineaDocumentoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
+        case 30: { QString _r = _t->retornoNumeroLineaDocumentoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 31: { QString _r = _t->retornoSerieDocumentoCheque((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
         default: ;
         }
@@ -204,9 +211,9 @@ int ModuloMediosDePago::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 31)
+        if (_id < 32)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 31;
+        _id -= 32;
     }
     return _id;
 }

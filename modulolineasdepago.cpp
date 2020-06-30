@@ -32,6 +32,7 @@ ModuloLineasDePago::ModuloLineasDePago(QObject *parent)
     QHash<int, QByteArray> roles;
     roles[codigoDocumentoRole] = "codigoDocumento";
     roles[codigoTipoDocumentoRole] = "codigoTipoDocumento";
+    roles[serieDocumentoRole] = "serieDocumento";
     roles[numeroLineaRole] = "numeroLinea";
     roles[codigoMedioPagoRole] = "codigoMedioPago";
     roles[monedaMedioPagoRole] = "monedaMedioPago";
@@ -56,6 +57,7 @@ ModuloLineasDePago::ModuloLineasDePago(QObject *parent)
 LineasDePago::LineasDePago(
         const QString &codigoDocumento,
         const QString &codigoTipoDocumento,
+        const QString &serieDocumento,
         const QString &numeroLinea,
         const QString &codigoMedioPago,
         const QString &monedaMedioPago,
@@ -75,6 +77,7 @@ LineasDePago::LineasDePago(
         )
     : m_codigoDocumento(codigoDocumento),
       m_codigoTipoDocumento(codigoTipoDocumento),
+      m_serieDocumento(serieDocumento),
       m_numeroLinea(numeroLinea),
       m_codigoMedioPago(codigoMedioPago),
       m_monedaMedioPago(monedaMedioPago),
@@ -96,6 +99,7 @@ LineasDePago::LineasDePago(
 
 QString LineasDePago::codigoDocumento() const{ return m_codigoDocumento;}
 QString LineasDePago::codigoTipoDocumento() const{ return m_codigoTipoDocumento;}
+QString LineasDePago::serieDocumento() const{ return m_serieDocumento;}
 QString LineasDePago::numeroLinea() const{ return m_numeroLinea;}
 QString LineasDePago::codigoMedioPago() const{ return m_codigoMedioPago;}
 QString LineasDePago::monedaMedioPago() const{ return m_monedaMedioPago;}
@@ -134,7 +138,7 @@ Database::chequeaStatusAccesoMysql();
     }
     if(conexion){
 
-        QSqlQuery q = Database::consultaSql("select DOCLP.* from DocumentosLineasPago DOCLP join Documentos DOC on DOC.codigoDocumento=DOCLP.codigoDocumento and DOC.codigoTipoDocumento=DOCLP.codigoTipoDocumento join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento   join MediosDePago MDP on MDP.codigoMedioPago=DOCLP.codigoMedioPago  where   MDP.codigoTipoMedioDePago=3 and DOCLP.montoCobrado<importePago and DOCLP.documentoChequeDiferido=0 and DOCLP.tipoDocumentoChequeDiferido=0 and  TD.afectaCuentaBancaria!=1 and  DOC.codigoEstadoDocumento not in ('C','A','P')  and "+campo+"'"+datoABuscar+"' order by DOC.fechaEmisionDocumento");
+        QSqlQuery q = Database::consultaSql("select DOCLP.* from DocumentosLineasPago DOCLP join Documentos DOC on DOC.codigoDocumento=DOCLP.codigoDocumento and DOC.codigoTipoDocumento=DOCLP.codigoTipoDocumento and DOC.serieDocumento=DOCLP.serieDocumento join TipoDocumento TD on TD.codigoTipoDocumento=DOC.codigoTipoDocumento   join MediosDePago MDP on MDP.codigoMedioPago=DOCLP.codigoMedioPago  where   MDP.codigoTipoMedioDePago=3 and DOCLP.montoCobrado<importePago and DOCLP.documentoChequeDiferido=0 and DOCLP.tipoDocumentoChequeDiferido=0 and  TD.afectaCuentaBancaria!=1 and  DOC.codigoEstadoDocumento not in ('C','A','P')  and "+campo+"'"+datoABuscar+"' order by DOC.fechaEmisionDocumento");
         QSqlRecord rec = q.record();
 
         ModuloLineasDePago::reset();
@@ -144,6 +148,7 @@ Database::chequeaStatusAccesoMysql();
                 ModuloLineasDePago::agregarLineaDePago(LineasDePago(
                                                            q.value(rec.indexOf("codigoDocumento")).toString(),
                                                            q.value(rec.indexOf("codigoTipoDocumento")).toString(),
+                                                           q.value(rec.indexOf("serieDocumento")).toString(),
                                                            q.value(rec.indexOf("numeroLinea")).toString(),
                                                            q.value(rec.indexOf("codigoMedioPago")).toString(),
                                                            q.value(rec.indexOf("monedaMedioPago")).toString(),
@@ -182,6 +187,9 @@ QVariant ModuloLineasDePago::data(const QModelIndex & index, int role) const {
 
     }
     else if (role == codigoTipoDocumentoRole){return lineasDePago.codigoTipoDocumento();}
+    else if (role == serieDocumentoRole){return lineasDePago.serieDocumento();}
+
+
     else if (role == numeroLineaRole){return lineasDePago.numeroLinea();}
     else if (role == codigoMedioPagoRole){return lineasDePago.codigoMedioPago();}
     else if (role == monedaMedioPagoRole){return lineasDePago.monedaMedioPago();}
@@ -200,7 +208,7 @@ QVariant ModuloLineasDePago::data(const QModelIndex & index, int role) const {
     return QVariant();
 }
 
-bool ModuloLineasDePago::actualizarLineaDePagoChequeDiferido(QString _codigoDocumento,QString _codigoTipoDocumento,QString _numeroLineaDocumento,QString _montoPagado) const {
+bool ModuloLineasDePago::actualizarLineaDePagoChequeDiferido(QString _codigoDocumento,QString _codigoTipoDocumento,QString _numeroLineaDocumento,QString _montoPagado, QString _serieDocumento) const {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -214,7 +222,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("update DocumentosLineasPago set montoCobrado='"+_montoPagado+"' where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'  and numeroLinea='"+_numeroLineaDocumento+"'")){
+        if(query.exec("update DocumentosLineasPago set montoCobrado='"+_montoPagado+"' where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'  and numeroLinea='"+_numeroLineaDocumento+"'")){
 
             return true;
 
@@ -224,7 +232,7 @@ Database::chequeaStatusAccesoMysql();
 
     }
 }
-bool ModuloLineasDePago::actualizarLineaDePagoTarjetaCredito(QString _codigoDocumento,QString _codigoTipoDocumento,QString _numeroLineaDocumento,QString _montoPagado) const {
+bool ModuloLineasDePago::actualizarLineaDePagoTarjetaCredito(QString _codigoDocumento,QString _codigoTipoDocumento,QString _numeroLineaDocumento,QString _montoPagado, QString _serieDocumento) const {
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -238,7 +246,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("update DocumentosLineasPago set montoCobrado='"+_montoPagado+"',tarjetaCobrada=1 where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"'  and numeroLinea='"+_numeroLineaDocumento+"'")){
+        if(query.exec("update DocumentosLineasPago set montoCobrado='"+_montoPagado+"',tarjetaCobrada=1 where codigoDocumento='"+_codigoDocumento+"' and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'  and numeroLinea='"+_numeroLineaDocumento+"'")){
 
             return true;
 
@@ -262,7 +270,7 @@ Database::chequeaStatusAccesoMysql();
 
     if(conexion){
 
-        QSqlQuery q = Database::consultaSql("select DOCLP.* from DocumentosLineasPago DOCLP  join Documentos DOC on DOC.codigoDocumento=DOCLP.codigoDocumento and DOC.codigoTipoDocumento=DOCLP.codigoTipoDocumento join MediosDePago MDP on MDP.codigoMedioPago=DOCLP.codigoMedioPago  where  MDP.codigoTipoMedioDePago=2 and DOCLP.tarjetaCobrada=0  and DOCLP.montoCobrado<importePago  and DOC.codigoEstadoDocumento not in ('C','A','P')  and "+campo+"'"+datoABuscar+"' order by DOC.fechaEmisionDocumento");
+        QSqlQuery q = Database::consultaSql("select DOCLP.* from DocumentosLineasPago DOCLP  join Documentos DOC on DOC.codigoDocumento=DOCLP.codigoDocumento and DOC.codigoTipoDocumento=DOCLP.codigoTipoDocumento and DOC.serieDocumento=DOCLP.serieDocumento join MediosDePago MDP on MDP.codigoMedioPago=DOCLP.codigoMedioPago  where  MDP.codigoTipoMedioDePago=2 and DOCLP.tarjetaCobrada=0  and DOCLP.montoCobrado<importePago  and DOC.codigoEstadoDocumento not in ('C','A','P')  and "+campo+"'"+datoABuscar+"' order by DOC.fechaEmisionDocumento");
         QSqlRecord rec = q.record();
 
         ModuloLineasDePago::reset();
@@ -272,6 +280,7 @@ Database::chequeaStatusAccesoMysql();
                 ModuloLineasDePago::agregarLineaDePago(LineasDePago(
                                                            q.value(rec.indexOf("codigoDocumento")).toString(),
                                                            q.value(rec.indexOf("codigoTipoDocumento")).toString(),
+                                                           q.value(rec.indexOf("serieDocumento")).toString(),
                                                            q.value(rec.indexOf("numeroLinea")).toString(),
                                                            q.value(rec.indexOf("codigoMedioPago")).toString(),
                                                            q.value(rec.indexOf("monedaMedioPago")).toString(),
@@ -296,6 +305,9 @@ Database::chequeaStatusAccesoMysql();
 
 QString ModuloLineasDePago::retornacodigoDocumento(int index){return m_LineasDePago[index].codigoDocumento();}
 QString ModuloLineasDePago::retornacodigoTipoDocumento(int index){return m_LineasDePago[index].codigoTipoDocumento();}
+QString ModuloLineasDePago::retornaSerieDocumento(int index){return m_LineasDePago[index].serieDocumento();}
+
+
 QString ModuloLineasDePago::retornanumeroLinea(int index){return m_LineasDePago[index].numeroLinea();}
 QString ModuloLineasDePago::retornacodigoMedioPago(int index){return m_LineasDePago[index].codigoMedioPago();}
 QString ModuloLineasDePago::retornamonedaMedioPago(int index){return m_LineasDePago[index].monedaMedioPago();}
@@ -311,7 +323,10 @@ QString ModuloLineasDePago::retornafechaCheque(int index){return m_LineasDePago[
 QString ModuloLineasDePago::retornanumeroCuentaBancaria(int index){return m_LineasDePago[index].numeroCuentaBancaria();}
 QString ModuloLineasDePago::retornacodigoBancoCuentaBancaria(int index){return m_LineasDePago[index].codigoBancoCuentaBancaria();}
 
-QString ModuloLineasDePago::retornaRazonDeCliente(QString _codigoDocumento,QString _codigoTipoDocumento) const{
+
+
+
+QString ModuloLineasDePago::retornaRazonDeCliente(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -326,7 +341,7 @@ Database::chequeaStatusAccesoMysql();
         QSqlQuery query(Database::connect());
 
 
-        if(query.exec("select concat(TIPOCLI.descripcionTipoCliente,': ',CLI.razonSocial) from Documentos DOC join Clientes CLI on CLI.codigoCliente=DOC.codigoCliente and CLI.tipoCliente=DOC.tipoCliente join TipoCliente TIPOCLI on TIPOCLI.codigoTipoCliente=CLI.tipoCliente where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {
+        if(query.exec("select concat(TIPOCLI.descripcionTipoCliente,': ',CLI.razonSocial) from Documentos DOC join Clientes CLI on CLI.codigoCliente=DOC.codigoCliente and CLI.tipoCliente=DOC.tipoCliente join TipoCliente TIPOCLI on TIPOCLI.codigoTipoCliente=CLI.tipoCliente where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"' and DOC.serieDocumento='"+_serieDocumento+"'  ")) {
             if(query.first()){
                 if(query.value(0).toString()!=""){
 
@@ -344,7 +359,7 @@ Database::chequeaStatusAccesoMysql();
     }
 }
 
-QString ModuloLineasDePago::retornaFechaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento) const{
+QString ModuloLineasDePago::retornaFechaDocumento(QString _codigoDocumento,QString _codigoTipoDocumento, QString _serieDocumento) const{
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -358,7 +373,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("select DOC.fechaEmisionDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'")) {
+        if(query.exec("select DOC.fechaEmisionDocumento from Documentos DOC  where DOC.codigoDocumento='"+_codigoDocumento+"'  and DOC.codigoTipoDocumento='"+_codigoTipoDocumento+"'  and DOC.serieDocumento='"+_serieDocumento+"'")) {
             if(query.first()){
                 if(query.value(0).toString()!=""){
 
@@ -376,7 +391,7 @@ Database::chequeaStatusAccesoMysql();
     }
 }
 
-bool ModuloLineasDePago::verificaMedioPagoEstaUtilizado(QString _codigoDocumento,QString _codigoTipoDocumento,QString _numeroLineaDocumento) const{
+bool ModuloLineasDePago::verificaMedioPagoEstaUtilizado(QString _codigoDocumento,QString _codigoTipoDocumento,QString _numeroLineaDocumento, QString _serieDocumento) const{
     bool conexion=true;
 Database::chequeaStatusAccesoMysql();
     if(!Database::connect().isOpen()){
@@ -390,7 +405,7 @@ Database::chequeaStatusAccesoMysql();
 
         QSqlQuery query(Database::connect());
 
-        if(query.exec("select montoCobrado from DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"'  and codigoTipoDocumento='"+_codigoTipoDocumento+"'  and numeroLinea='"+_numeroLineaDocumento+"'")) {
+        if(query.exec("select montoCobrado from DocumentosLineasPago where codigoDocumento='"+_codigoDocumento+"'  and codigoTipoDocumento='"+_codigoTipoDocumento+"' and serieDocumento='"+_serieDocumento+"'  and numeroLinea='"+_numeroLineaDocumento+"'")) {
             if(query.first()){
 
                 if(query.value(0).toString()=="0"){

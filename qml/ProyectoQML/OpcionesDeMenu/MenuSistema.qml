@@ -230,7 +230,18 @@ Rectangle {
         ///         :Se agrega nuevo parametro de configuración CODIGO_BARRAS_A_DEMANDA_EXTENDIDO el cual permite ingresar muchos datos en el campo codigo de barras a demanda e intercambia el ENTER por tabulación.
         /// 1.14.9  :Se realizo corrección de reporte "Saldo proveedor por moneda entre fechas".
         /// 1.14.10 :Se realizo corrección sobre control de cantidad de articulos con stock previsto, cuando se da clic en el boton signo de mas de la lista de items al facturar.        
-
+        /// 1.15.0  :Se agrega soporte para imrpesoras de ticket citizen Ct-e351 y ct-s310ii.
+        ///         :Se agrego parametro de configuración DISTANCIAENTREBOTONESMENU para setear la distancia entre los botones de la barra de herramientas.
+        /// 1.15.1  :Se agrega soporte para imprimir segun las cantidades de copias configuradas en los tipos de documentos.
+        ///         :Se agrega información sobre la descripción a imprimir del tipo de documento en la Adenda, para saber si es contado o credito.
+        /// 1.15.2  :Se llama varias veces a la busqueda de impresoras para elimianr problemas de timeout con cups ya que al iniciar el sistema operativo queda en modo zombie.
+        /// 1.15.3  :Se corrige el modo impresión de ticket, para que cuando un documento no es de cfe, se imprima información del nombre del documento como salia anteriormente.
+        /// 1.16.0  :Se agrega el soporte para la clave de documentos codigo, tipo y serie. GRAN CAMBIO, cuidado. Se modificaron también los reportes.
+        /// 1.16.1  :Se corrige problema de carga de tarjetas pendientes de pago en el menu administración.
+        /// 1.16.1  :Se corrige problema de carga de modificación de codigos de barras a demanda en una factura modificada.
+        /// 1.16.2  :Correcciones varias.
+        /// 1.16.3  :se agranda el campo de email. Se corrige el error de serie en cruce de cuentas corrientes.
+        /// 1.16.4  :Correcciones varias.
 
         Text {
             id: txtCopyright

@@ -51,6 +51,9 @@ QString ModuloConfiguracion::m_MUESTRA_DESCRIPCION_ARTICULO_EXTENDIDA_FACTURACIO
 QString ModuloConfiguracion::m_MODO_CFE;
 QString ModuloConfiguracion::m_CODIGO_BARRAS_A_DEMANDA_EXTENDIDO;
 
+QString ModuloConfiguracion::m_DISTANCIAENTREBOTONESMENU;
+
+
 
 
 
@@ -222,6 +225,10 @@ void ModuloConfiguracion::cargarConfiguracion(){
                 else if(q.value(rec.indexOf("codigoConfiguracion")).toString()=="CODIGO_BARRAS_A_DEMANDA_EXTENDIDO"){
                     ModuloConfiguracion::setCODIGO_BARRAS_A_DEMANDA_EXTENDIDO(q.value(rec.indexOf("valorConfiguracion")).toString());
                 }
+                else if(q.value(rec.indexOf("codigoConfiguracion")).toString()=="DISTANCIAENTREBOTONESMENU"){
+                    ModuloConfiguracion::setDISTANCIAENTREBOTONESMENU(q.value(rec.indexOf("valorConfiguracion")).toString());
+                }
+
 
 
 
@@ -348,6 +355,10 @@ QString ModuloConfiguracion::retornaValorConfiguracion(QString _codigoConfigurac
     else if(_codigoConfiguracion=="CODIGO_BARRAS_A_DEMANDA_EXTENDIDO"){
         return ModuloConfiguracion::getCODIGO_BARRAS_A_DEMANDA_EXTENDIDO();
     }
+    else if(_codigoConfiguracion=="DISTANCIAENTREBOTONESMENU"){
+        return ModuloConfiguracion::getDISTANCIAENTREBOTONESMENU();
+    }
+
 
 
 

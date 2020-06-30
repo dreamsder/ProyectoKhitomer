@@ -96,6 +96,11 @@ Rectangle{
         color: "#080707"
         objectName: codigoTipoDocumento
 
+        Text{
+            visible: false
+            objectName:serieDocumento
+        }
+
     }
 
     MouseArea{
@@ -121,74 +126,10 @@ Rectangle{
                     clicSolo()
                 }
 
-             /*   if(chbSeleccionado.chekActivo){
-                    chbSeleccionado.setActivo(false)
-                    modeloListaDocumentoConDeuda.setProperty(index,"checkboxActivo",false)
-                }else{
-                    chbSeleccionado.setActivo(true)
-                    modeloListaDocumentoConDeuda.setProperty(index,"checkboxActivo",true)
-                }*/
-            //}
+
         }
 
-        /*
-        onEntered: {
-            rectListaItemColorDeseleccionado.stop()
-            rectListaItemColorSeleccionado.start()
-        }
-        onExited: {
-            rectListaItemColorSeleccionado.stop()
-            rectListaItemColorDeseleccionado.start()
-        }
-        onClicked: {
-            if(chbSeleccionado.chekActivo){
-                chbSeleccionado.setActivo(false)
-                modeloListaTarjetasCreditoACobrar.setProperty(index,"checkboxActivo",false)
-            }else{
-                chbSeleccionado.setActivo(true)
-                modeloListaTarjetasCreditoACobrar.setProperty(index,"checkboxActivo",true)
-            }
-        }
-        onDoubleClicked: {
 
-            if(chbSeleccionado.chekActivo){
-                chbSeleccionado.setActivo(false)
-                modeloListaTarjetasCreditoACobrar.setProperty(index,"checkboxActivo",false)
-            }else{
-                chbSeleccionado.setActivo(true)
-                modeloListaTarjetasCreditoACobrar.setProperty(index,"checkboxActivo",true)
-            }
-
-
-            if(tagFacturacion.enabled && funcionesmysql.mensajeAdvertencia("Se va a cargar la factura seleccionada, \nsi tiene datos en uso se perderan, desea continuar?\n\nPresione [ Sí ] para confirmar.")){
-
-                mostrarMantenimientos(0,"derecha")
-
-                mantenimientoFactura.cargarFactura(codigoDoc
-                                                   ,codigoTipoDoc
-                                                   ,modeloDocumentos.retornacodigoEstadoDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornatipoClienteDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornacodigoClienteDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaserieDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornacodigoVendedorComisionaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornacodigoLiquidacionDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornacodigoVendedorLiquidacionDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornafechaEmisionDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornafechaEmisionDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornacodigoMonedaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaprecioIvaVentaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaprecioSubTotalVentaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaprecioTotalVentaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornatotalIva1Documento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornatotalIva2Documento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornatotalIva3Documento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaobservacionesDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaonumeroCuentaBancariaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaocodigoBancoDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaMontoDescuentoTotalDocumento(codigoDoc,codigoTipoDoc)
-                                                   )
-            }
-        }*/
     }
 
     PropertyAnimation{

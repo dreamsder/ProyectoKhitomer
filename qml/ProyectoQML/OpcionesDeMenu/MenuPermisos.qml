@@ -55,7 +55,8 @@ Rectangle {
                                                             checkBoxActivo: modeloGenericoComboboxTipoDocumento.retornarCheckBoxActivo(i),
                                                             codigoTipoItem:"0",
                                                             descripcionItemSegundafila:"",
-                                                            valorItem:"0"
+                                                            valorItem:"0",
+                                                            serieDoc:""
 
                                                         })
             }else{
@@ -65,7 +66,8 @@ Rectangle {
                                                             checkBoxActivo: modeloListaTipoDocumentosComboBox.retornaTipoDocumentoActivoPorPerfil(modeloGenericoComboboxTipoDocumento.retornarCodigoItem(i),_codigoPerfil),
                                                             codigoTipoItem:"0",
                                                             descripcionItemSegundafila:"",
-                                                            valorItem:"0"
+                                                            valorItem:"0",
+                                                            serieDoc:""
                                                         })
 
 
@@ -75,7 +77,8 @@ Rectangle {
                                                             descripcionItem: modeloGenericoComboboxTipoDocumento.retornarDescripcionItem(i),
                                                             checkBoxActivo: modeloListaTipoDocumentosComboBox.retornaTipoDocumentoActivoPorPerfil(modeloGenericoComboboxTipoDocumento.retornarCodigoItem(i),_codigoPerfil),
                                                             codigoTipoItem:"0",
-                                                            valorItem:"0"
+                                                            valorItem:"0",
+                                                            serieDoc:""
                                                         })
 
 
@@ -97,7 +100,8 @@ Rectangle {
                                                       checkBoxActivo: modeloGenericoComboboxReportesPermisos.retornarCheckBoxActivo(o),
                                                       codigoTipoItem:"0",
                                                       descripcionItemSegundafila:"",
-                                                      valorItem:"0"
+                                                      valorItem:"0",
+                                                      serieDoc:""
 
                                                   })
             }else{
@@ -107,7 +111,8 @@ Rectangle {
                                                       checkBoxActivo: modeloReportes.retornaReporteActivoPorPerfil(modeloGenericoComboboxReportesPermisos.retornarCodigoItem(o),_codigoPerfil),
                                                       codigoTipoItem:"0",
                                                       descripcionItemSegundafila:"",
-                                                      valorItem:"0"
+                                                      valorItem:"0",
+                                                      serieDoc:""
                                                   })
             }
         }

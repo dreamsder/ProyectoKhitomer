@@ -38,7 +38,11 @@ Rectangle {
     property bool  estadoConexionMysql: true
     property bool  estadoConexionServidor: true
 
-    property string versionKhitomer: "1.15.0"
+    property string versionKhitomer: "1.16.4"
+
+
+
+    property int distanciaEntreBotonesBarraDeTareas: modeloconfiguracion.retornaValorConfiguracion("DISTANCIAENTREBOTONESMENU")
 
     // setea los permisos de la barra de herramientas del mantenimiento de liquidaciones
     function permisosMantenimientoLiquidaciones(){
@@ -1490,7 +1494,7 @@ Rectangle {
                             tagCuentaCorriente.enabled=mantenimientoCuentasCorriente.enabled
                             tagCuentaCorriente.visible=mantenimientoCuentasCorriente.enabled
 
-                            mantenimientoPromociones.enabled=  modeloListaPerfilesComboBox.retornaValorDePermiso(txtNombreDeUsuario.textoInputBox.trim(),"permiteUsarPromociones")
+                            mantenimientoPromociones.enabled= false// modeloListaPerfilesComboBox.retornaValorDePermiso(txtNombreDeUsuario.textoInputBox.trim(),"permiteUsarPromociones")
                             tagPromociones.enabled=mantenimientoPromociones.enabled
                             tagPromociones.visible=mantenimientoPromociones.enabled
 

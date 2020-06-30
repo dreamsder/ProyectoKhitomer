@@ -216,6 +216,13 @@ Rectangle {
                             visible:false
                             text: valorItem
                         }
+                        Text{
+                            id: serieDocAdquirido
+                            visible:false
+                            text: serieDoc
+                        }
+
+
 
                         Text {
                             id: texto1

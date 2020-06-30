@@ -224,6 +224,18 @@ Rectangle{
             }else{
                 chbUtilizaSoloMedioPagoCheque.setActivo(true)
             }
+            if(imprimeEnFormatoTicket==0){
+                chbEmitenEnImpresorasTicket.setActivo(false)
+            }else{
+                chbEmitenEnImpresorasTicket.setActivo(true)
+            }
+            if(imprimeObservacionesEnTicket==0){
+                chbEmiteObservacionesEnImpresorasTicket.setActivo(false)
+            }else{
+                chbEmiteObservacionesEnImpresorasTicket.setActivo(true)
+            }
+
+
             if(esDocumentoDeVenta==0){
                 chbEsDocumentoDeVenta.setActivo(false)
             }else{

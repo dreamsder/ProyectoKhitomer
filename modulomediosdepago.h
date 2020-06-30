@@ -81,33 +81,36 @@ public:
 
     Q_INVOKABLE QString retornaMonedaMedioDePago(QString ) const;
 
-    Q_INVOKABLE bool guardarLineaMedioDePago(QString , QString , QString , QString , QString , QString , QString, QString , QString , QString, QString , QString, QString, QString , QString , QString , QString ) const;
+    Q_INVOKABLE bool guardarLineaMedioDePago(QString , QString , QString , QString , QString , QString , QString, QString , QString , QString, QString , QString, QString, QString , QString , QString , QString , QString _serieDocumento) const;
 
-    Q_INVOKABLE bool eliminarLineaMedioDePagoDocumento( QString , QString)const;
+    Q_INVOKABLE bool eliminarLineaMedioDePagoDocumento( QString , QString, QString)const;
 
-    Q_INVOKABLE int retornaCantidadLineasMedioDePago(QString ,QString) const;
+    Q_INVOKABLE int retornaCantidadLineasMedioDePago(QString , QString, QString _serieDocumento) const;
 
-    Q_INVOKABLE QString retornoCuotas(QString ,QString , QString );
+    Q_INVOKABLE QString retornoCuotas(QString , QString , QString , QString _serieDocumento);
 
-    Q_INVOKABLE double retornoImportePago(QString ,QString , QString );
+    Q_INVOKABLE double retornoImportePago(QString , QString , QString , QString _serieDocumento);
 
-    Q_INVOKABLE QString retornoMonedaMedioPago(QString ,QString , QString );
+    Q_INVOKABLE QString retornoMonedaMedioPago(QString , QString , QString , QString _serieDocumento);
 
-    Q_INVOKABLE QString retornoCodigoMedioPago(QString ,QString , QString );
+    Q_INVOKABLE QString retornoCodigoMedioPago(QString , QString , QString , QString _serieDocumento);
 
-    Q_INVOKABLE QString retornoCodigoTarjetaCredito(QString ,QString , QString );
-    Q_INVOKABLE QString retornoCodigoBanco(QString ,QString , QString );
-    Q_INVOKABLE QString retornoNumeroCheque(QString ,QString , QString );
-    Q_INVOKABLE QString retornoFechaCheque(QString ,QString , QString );
-    Q_INVOKABLE QString retornoTipoCheque(QString ,QString , QString );
+    Q_INVOKABLE QString retornoCodigoTarjetaCredito(QString , QString , QString , QString _serieDocumento);
+    Q_INVOKABLE QString retornoCodigoBanco(QString , QString , QString , QString _serieDocumento);
+    Q_INVOKABLE QString retornoNumeroCheque(QString , QString , QString , QString _serieDocumento);
+    Q_INVOKABLE QString retornoFechaCheque(QString ,QString , QString , QString _serieDocumento);
+    Q_INVOKABLE QString retornoTipoCheque(QString ,QString , QString , QString _serieDocumento);
 
-    Q_INVOKABLE QString retornoCuentaBancaria(QString ,QString , QString );
-    Q_INVOKABLE QString retornoBancoCuentaBancaria(QString ,QString , QString );
+    Q_INVOKABLE QString retornoCuentaBancaria(QString , QString , QString , QString _serieDocumento);
+    Q_INVOKABLE QString retornoBancoCuentaBancaria(QString ,QString , QString , QString _serieDocumento);
 
-    Q_INVOKABLE QString retornoCodigoDocumentoCheque(QString ,QString , QString );
-    Q_INVOKABLE bool retornoEsDiferidoCheque(QString ,QString , QString );
-    Q_INVOKABLE QString retornoCodigoTipoDocumentoCheque(QString ,QString , QString );
-    Q_INVOKABLE QString retornoNumeroLineaDocumentoCheque(QString ,QString , QString );
+    Q_INVOKABLE QString retornoCodigoDocumentoCheque(QString ,QString , QString , QString _serieDocumento);
+    Q_INVOKABLE bool retornoEsDiferidoCheque(QString ,QString , QString , QString _serieDocumento);
+    Q_INVOKABLE QString retornoCodigoTipoDocumentoCheque(QString ,QString , QString , QString _serieDocumento);
+    Q_INVOKABLE QString retornoNumeroLineaDocumentoCheque(QString ,QString , QString , QString _serieDocumento);
+
+    Q_INVOKABLE QString retornoSerieDocumentoCheque(QString _codigoDocumento,QString _codigoTipoDocumento, QString _linea, QString _serieDocumento);
+
 
 
 

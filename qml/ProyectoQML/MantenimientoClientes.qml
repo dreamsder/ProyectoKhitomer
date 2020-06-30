@@ -65,7 +65,8 @@ Rectangle {
                                                                  checkBoxActivo: false,
                                                                  codigoTipoItem:"",
                                                                  descripcionItemSegundafila:"",
-                                                                 valorItem:""
+                                                                 valorItem:"",
+                                                                 serieDoc:""
                                                              })
 
                 }else{
@@ -78,7 +79,8 @@ Rectangle {
                                                                  checkBoxActivo: modeloListasPreciosClientes.retornaSiClienteTieneListaPrecio(modeloListasPreciosComboBox.retornaCodigoListaPrecioPorIndice(i),_codigoCliente,_codigoTipoCliente),
                                                                  codigoTipoItem:"",
                                                                  descripcionItemSegundafila:"",
-                                                                 valorItem:""
+                                                                 valorItem:"",
+                                                                 serieDoc:""
                                                              })
                 }
             }
@@ -470,7 +472,7 @@ Rectangle {
                 y: 130
                 //  width: 250
                 textoDeFondo: "email@empresa.com"
-                largoMaximo: 30
+                largoMaximo: 70
                 botonBuscarTextoVisible: true
                 textoTitulo: "E-mail:"
                 textoInputBox: ""
@@ -507,7 +509,7 @@ Rectangle {
                 botonBorrarTextoVisible: true
                 textoDeFondo: "http://www.empresa.com"
                 visible: modeloControlesMantenimientos.retornaValorMantenimiento("clientesUsaSitioWeb")
-                largoMaximo: 30
+                largoMaximo: 40
                 botonBuscarTextoVisible: true
                 textoInputBox: ""
                 textoTitulo: "Sitio web:"
@@ -911,7 +913,7 @@ Rectangle {
         anchors.rightMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 20
-        spacing: 15
+        spacing: distanciaEntreBotonesBarraDeTareas
 
         BotonBarraDeHerramientas {
             id: botonNuevoCliente

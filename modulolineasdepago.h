@@ -31,6 +31,7 @@ public:
     Q_INVOKABLE LineasDePago(
             const QString &codigoDocumento,
             const QString &codigoTipoDocumento,
+            const QString &serieDocumento,
             const QString &numeroLinea,
             const QString &codigoMedioPago,
             const QString &monedaMedioPago,
@@ -49,6 +50,7 @@ public:
 
     QString codigoDocumento() const;
     QString codigoTipoDocumento() const;
+    QString serieDocumento() const;
     QString numeroLinea() const;
     QString codigoMedioPago() const;
     QString monedaMedioPago() const;
@@ -67,6 +69,7 @@ public:
 private:
     QString m_codigoDocumento;
     QString m_codigoTipoDocumento;
+    QString m_serieDocumento;
     QString m_numeroLinea;
     QString m_codigoMedioPago;
     QString m_monedaMedioPago;
@@ -90,6 +93,7 @@ public:
     enum LineasDePagoRoles {
         codigoDocumentoRole = Qt::UserRole + 1,
         codigoTipoDocumentoRole,
+        serieDocumentoRole,
         numeroLineaRole,
         codigoMedioPagoRole,
         monedaMedioPagoRole,
@@ -121,17 +125,18 @@ public:
 
     Q_INVOKABLE void buscarLineasDePagoTarjetasDeCreditoPendientesDePago(QString , QString);
 
-    Q_INVOKABLE bool actualizarLineaDePagoChequeDiferido(QString ,QString ,QString ,QString ) const;
+    Q_INVOKABLE bool actualizarLineaDePagoChequeDiferido(QString ,QString ,QString ,QString, QString ) const;
 
-    Q_INVOKABLE bool actualizarLineaDePagoTarjetaCredito(QString ,QString ,QString ,QString ) const;
+    Q_INVOKABLE bool actualizarLineaDePagoTarjetaCredito(QString ,QString ,QString ,QString, QString ) const;
 
-    Q_INVOKABLE bool verificaMedioPagoEstaUtilizado(QString ,QString ,QString ) const;
+    Q_INVOKABLE bool verificaMedioPagoEstaUtilizado(QString ,QString ,QString , QString) const;
 
 
 
 
     Q_INVOKABLE QString retornacodigoDocumento(int);
     Q_INVOKABLE QString retornacodigoTipoDocumento(int);
+    Q_INVOKABLE QString retornaSerieDocumento(int);
     Q_INVOKABLE QString retornanumeroLinea(int);
     Q_INVOKABLE QString retornacodigoMedioPago(int);
     Q_INVOKABLE QString retornamonedaMedioPago(int);
@@ -148,8 +153,8 @@ public:
     Q_INVOKABLE QString retornacodigoBancoCuentaBancaria(int);
 
 
-    Q_INVOKABLE QString retornaRazonDeCliente(QString ,QString ) const;
-    Q_INVOKABLE QString retornaFechaDocumento(QString ,QString ) const;
+    Q_INVOKABLE QString retornaRazonDeCliente(QString , QString , QString serieDocumento) const;
+    Q_INVOKABLE QString retornaFechaDocumento(QString , QString , QString _serieDocumento) const;
 
 
 

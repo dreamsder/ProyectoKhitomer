@@ -83,34 +83,34 @@ Rectangle{
 
             if(tagFacturacion.enabled && funcionesmysql.mensajeAdvertencia("Se va a cargar la factura seleccionada, \nsi tiene datos en uso se perderan, desea continuar?\n\nPresione [ Sí ] para confirmar.")){
 
-                if(modeloDocumentos.existeDocumento(codigoDocumento,codigoTipoDocumento)){
+                if(modeloDocumentos.existeDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento)){
 
                     mostrarMantenimientos(0,"derecha")
 
                     mantenimientoFactura.cargarFactura(codigoDocumento,
                                                        codigoTipoDocumento,
-                                                       modeloDocumentos.retornacodigoEstadoDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornatipoClienteDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornacodigoClienteDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornaserieDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornacodigoVendedorComisionaDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornacodigoLiquidacionDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornacodigoVendedorLiquidacionDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornafechaEmisionDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornafechaEmisionDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornacodigoMonedaDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornaprecioIvaVentaDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornaprecioSubTotalVentaDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornaprecioTotalVentaDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornatotalIva1Documento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornatotalIva2Documento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornatotalIva3Documento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornaobservacionesDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornaonumeroCuentaBancariaDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornaocodigoBancoDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornaMontoDescuentoTotalDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornaFormaDePagoDocumento(codigoDocumento,codigoTipoDocumento),
-                                                       modeloDocumentos.retornaPorcentajeDescuentoAlTotalDocumento(codigoDocumento,codigoTipoDocumento),
+                                                       modeloDocumentos.retornacodigoEstadoDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornatipoClienteDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornacodigoClienteDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       serieDocumento,
+                                                       modeloDocumentos.retornacodigoVendedorComisionaDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornacodigoLiquidacionDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornacodigoVendedorLiquidacionDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornafechaEmisionDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornafechaEmisionDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornacodigoMonedaDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornaprecioIvaVentaDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornaprecioSubTotalVentaDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornaprecioTotalVentaDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornatotalIva1Documento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornatotalIva2Documento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornatotalIva3Documento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornaobservacionesDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornaonumeroCuentaBancariaDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornaocodigoBancoDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornaMontoDescuentoTotalDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornaFormaDePagoDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
+                                                       modeloDocumentos.retornaPorcentajeDescuentoAlTotalDocumento(codigoDocumento,codigoTipoDocumento,serieDocumento),
 
                                                        "","")
 

@@ -62,7 +62,8 @@ Rectangle {
                                                          esDiferido: "0",
                                                          codigoTipoDoc:modeloLineasDePagoTarjetasCredito.retornacodigoTipoDocumento(j),
                                                          numeroLineaDocumento:modeloLineasDePagoTarjetasCredito.retornanumeroLinea(j),
-                                                         checkboxActivo:false
+                                                         checkboxActivo:false,
+                                                         serieDocumento:modeloLineasDePagoTarjetasCredito.retornaSerieDocumento(j)
                                                      })
         }
     }
@@ -135,15 +136,15 @@ Rectangle {
 
                         if(modeloListaTarjetasCreditoACobrar.get(i).checkboxActivo){
 
-                            if(!modeloLineasDePagoListaChequesDiferidosComboBox.actualizarLineaDePagoTarjetaCredito(modeloListaTarjetasCreditoACobrar.get(i).codigoDoc, modeloListaTarjetasCreditoACobrar.get(i).codigoTipoDoc,  modeloListaTarjetasCreditoACobrar.get(i).numeroLineaDocumento,modeloListaTarjetasCreditoACobrar.get(i).montoMedioDePago)){
+                            if(!modeloLineasDePagoListaChequesDiferidosComboBox.actualizarLineaDePagoTarjetaCredito(modeloListaTarjetasCreditoACobrar.get(i).codigoDoc, modeloListaTarjetasCreditoACobrar.get(i).codigoTipoDoc,  modeloListaTarjetasCreditoACobrar.get(i).numeroLineaDocumento,modeloListaTarjetasCreditoACobrar.get(i).montoMedioDePago,modeloListaTarjetasCreditoACobrar.get(i).serieDocumento)){
                                 txtMensajeInformacion.color="#d93e3e"
                                 txtMensajeInformacion.text="ATENCION: Error al actualizar el pago de una tarjeta. Factura número: "+ modeloListaTarjetasCreditoACobrar.get(i).codigoDoc +" - "+modeloListaTipoDocumentosComboBox.retornaDescripcionTipoDocumento(modeloListaTarjetasCreditoACobrar.get(i).codigoTipoDoc)
                                 break;
                             }else{
                                 if(i==0){
-                                    razonClientesCobrados+=modeloLineasDePagoTarjetasCredito.retornaRazonDeCliente(modeloListaTarjetasCreditoACobrar.get(i).codigoDoc,modeloListaTarjetasCreditoACobrar.get(i).codigoTipoDoc)
+                                    razonClientesCobrados+=modeloLineasDePagoTarjetasCredito.retornaRazonDeCliente(modeloListaTarjetasCreditoACobrar.get(i).codigoDoc,modeloListaTarjetasCreditoACobrar.get(i).codigoTipoDoc,modeloListaTarjetasCreditoACobrar.get(i).serieDocumento)
                                 }else{
-                                    razonClientesCobrados+=" - "+modeloLineasDePagoTarjetasCredito.retornaRazonDeCliente(modeloListaTarjetasCreditoACobrar.get(i).codigoDoc,modeloListaTarjetasCreditoACobrar.get(i).codigoTipoDoc)
+                                    razonClientesCobrados+=" - "+modeloLineasDePagoTarjetasCredito.retornaRazonDeCliente(modeloListaTarjetasCreditoACobrar.get(i).codigoDoc,modeloListaTarjetasCreditoACobrar.get(i).codigoTipoDoc,modeloListaTarjetasCreditoACobrar.get(i).serieDocumento)
                                 }
 
 

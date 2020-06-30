@@ -175,7 +175,16 @@ HEADERS += \
     json/json.h \
     json/json.hpp \
     modulotipopromocion.h \
-    modulopromociones.h
+    modulopromociones.h \
+    curl4/curl.h \
+    curl4/typecheck-gcc.h \
+    curl4/system.h \
+    curl4/multi.h \
+    curl4/urlapi.h \
+    curl4/easy.h \
+    curl4/curlver.h \
+    curl4/mprintf.h \
+    curl4/stdcheaders.h
 
 RESOURCES += \
     Imagenes.qrc \

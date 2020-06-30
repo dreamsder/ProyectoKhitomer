@@ -48,11 +48,11 @@ static const uint qt_meta_data_ModuloListaTipoDocumentos[] = {
      600,  268,  407,   26, 0x02,
      653,  268,   26,   26, 0x02,
      698,  268,   26,   26, 0x02,
-     784,  743,  109,   26, 0x02,
-    1135,  268,  316,   26, 0x02,
-    1183,   26,  407,   26, 0x02,
-    1223,  268,  407,   26, 0x02,
-    1276,  268,  407,   26, 0x02,
+     786,  743,  109,   26, 0x02,
+    1153,  268,  316,   26, 0x02,
+    1201,   26,  407,   26, 0x02,
+    1241,  268,  407,   26, 0x02,
+    1294,  219,  407,   26, 0x02,
 
        0        // eod
 };
@@ -76,16 +76,18 @@ static const char qt_meta_stringdata_ModuloListaTipoDocumentos[] = {
     "retornaTipoDocumentoActivoPorPerfil(QString,QString)\0"
     "insertarTipoDocumentoPerfil(QString,QString)\0"
     "eliminarTipoDocumentoPerfil(QString,QString)\0"
-    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\0"
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\0"
     "insertarTipoDocumento(QString,QString,QString,QString,QString,QString,"
     "QString,QString,QString,QString,QString,QString,QString,QString,QStrin"
     "g,QString,QString,QString,QString,QString,QString,QString,QString,QStr"
     "ing,QString,QString,QString,QString,QString,QString,QString,QString,QS"
-    "tring,QString,QString,QString,QString,QString,QString,QString,QString)\0"
+    "tring,QString,QString,QString,QString,QString,QString,QString,QString,"
+    "QString,QString)\0"
     "retornaValorCampoTipoDocumento(QString,QString)\0"
     "permiteDevolucionTipoDocumento(QString)\0"
     "retornaDocumentoSegunMonedaRedondea(QString,QString)\0"
-    "retornaPermiteModificacionMedioPagoPorDeudaContado(QString,QString)\0"
+    "retornaPermiteModificacionMedioPagoPorDeudaContado(QString,QString,QSt"
+    "ring)\0"
 };
 
 void ModuloListaTipoDocumentos::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -124,7 +126,7 @@ void ModuloListaTipoDocumentos::qt_static_metacall(QObject *_o, QMetaObject::Cal
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         case 16: _t->insertarTipoDocumentoPerfil((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
         case 17: _t->eliminarTipoDocumentoPerfil((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
-        case 18: { int _r = _t->insertarTipoDocumento((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])),(*reinterpret_cast< QString(*)>(_a[5])),(*reinterpret_cast< QString(*)>(_a[6])),(*reinterpret_cast< QString(*)>(_a[7])),(*reinterpret_cast< QString(*)>(_a[8])),(*reinterpret_cast< QString(*)>(_a[9])),(*reinterpret_cast< QString(*)>(_a[10])),(*reinterpret_cast< QString(*)>(_a[11])),(*reinterpret_cast< QString(*)>(_a[12])),(*reinterpret_cast< QString(*)>(_a[13])),(*reinterpret_cast< QString(*)>(_a[14])),(*reinterpret_cast< QString(*)>(_a[15])),(*reinterpret_cast< QString(*)>(_a[16])),(*reinterpret_cast< QString(*)>(_a[17])),(*reinterpret_cast< QString(*)>(_a[18])),(*reinterpret_cast< QString(*)>(_a[19])),(*reinterpret_cast< QString(*)>(_a[20])),(*reinterpret_cast< QString(*)>(_a[21])),(*reinterpret_cast< QString(*)>(_a[22])),(*reinterpret_cast< QString(*)>(_a[23])),(*reinterpret_cast< QString(*)>(_a[24])),(*reinterpret_cast< QString(*)>(_a[25])),(*reinterpret_cast< QString(*)>(_a[26])),(*reinterpret_cast< QString(*)>(_a[27])),(*reinterpret_cast< QString(*)>(_a[28])),(*reinterpret_cast< QString(*)>(_a[29])),(*reinterpret_cast< QString(*)>(_a[30])),(*reinterpret_cast< QString(*)>(_a[31])),(*reinterpret_cast< QString(*)>(_a[32])),(*reinterpret_cast< QString(*)>(_a[33])),(*reinterpret_cast< QString(*)>(_a[34])),(*reinterpret_cast< QString(*)>(_a[35])),(*reinterpret_cast< QString(*)>(_a[36])),(*reinterpret_cast< QString(*)>(_a[37])),(*reinterpret_cast< QString(*)>(_a[38])),(*reinterpret_cast< QString(*)>(_a[39])),(*reinterpret_cast< QString(*)>(_a[40])),(*reinterpret_cast< QString(*)>(_a[41])));
+        case 18: { int _r = _t->insertarTipoDocumento((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])),(*reinterpret_cast< QString(*)>(_a[4])),(*reinterpret_cast< QString(*)>(_a[5])),(*reinterpret_cast< QString(*)>(_a[6])),(*reinterpret_cast< QString(*)>(_a[7])),(*reinterpret_cast< QString(*)>(_a[8])),(*reinterpret_cast< QString(*)>(_a[9])),(*reinterpret_cast< QString(*)>(_a[10])),(*reinterpret_cast< QString(*)>(_a[11])),(*reinterpret_cast< QString(*)>(_a[12])),(*reinterpret_cast< QString(*)>(_a[13])),(*reinterpret_cast< QString(*)>(_a[14])),(*reinterpret_cast< QString(*)>(_a[15])),(*reinterpret_cast< QString(*)>(_a[16])),(*reinterpret_cast< QString(*)>(_a[17])),(*reinterpret_cast< QString(*)>(_a[18])),(*reinterpret_cast< QString(*)>(_a[19])),(*reinterpret_cast< QString(*)>(_a[20])),(*reinterpret_cast< QString(*)>(_a[21])),(*reinterpret_cast< QString(*)>(_a[22])),(*reinterpret_cast< QString(*)>(_a[23])),(*reinterpret_cast< QString(*)>(_a[24])),(*reinterpret_cast< QString(*)>(_a[25])),(*reinterpret_cast< QString(*)>(_a[26])),(*reinterpret_cast< QString(*)>(_a[27])),(*reinterpret_cast< QString(*)>(_a[28])),(*reinterpret_cast< QString(*)>(_a[29])),(*reinterpret_cast< QString(*)>(_a[30])),(*reinterpret_cast< QString(*)>(_a[31])),(*reinterpret_cast< QString(*)>(_a[32])),(*reinterpret_cast< QString(*)>(_a[33])),(*reinterpret_cast< QString(*)>(_a[34])),(*reinterpret_cast< QString(*)>(_a[35])),(*reinterpret_cast< QString(*)>(_a[36])),(*reinterpret_cast< QString(*)>(_a[37])),(*reinterpret_cast< QString(*)>(_a[38])),(*reinterpret_cast< QString(*)>(_a[39])),(*reinterpret_cast< QString(*)>(_a[40])),(*reinterpret_cast< QString(*)>(_a[41])),(*reinterpret_cast< QString(*)>(_a[42])),(*reinterpret_cast< QString(*)>(_a[43])));
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         case 19: { QString _r = _t->retornaValorCampoTipoDocumento((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
@@ -132,7 +134,7 @@ void ModuloListaTipoDocumentos::qt_static_metacall(QObject *_o, QMetaObject::Cal
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         case 21: { bool _r = _t->retornaDocumentoSegunMonedaRedondea((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 22: { bool _r = _t->retornaPermiteModificacionMedioPagoPorDeudaContado((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
+        case 22: { bool _r = _t->retornaPermiteModificacionMedioPagoPorDeudaContado((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< QString(*)>(_a[3])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         default: ;
         }

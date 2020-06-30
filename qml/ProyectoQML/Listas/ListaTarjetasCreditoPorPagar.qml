@@ -98,29 +98,29 @@ Rectangle{
 mostrarMantenimientos(0,"derecha")
 
                 mantenimientoFactura.cargarFactura(codigoDoc
-                                                   ,codigoTipoDoc
-                                                   ,modeloDocumentos.retornacodigoEstadoDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornatipoClienteDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornacodigoClienteDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaserieDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornacodigoVendedorComisionaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornacodigoLiquidacionDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornacodigoVendedorLiquidacionDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornafechaEmisionDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornafechaEmisionDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornacodigoMonedaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaprecioIvaVentaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaprecioSubTotalVentaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaprecioTotalVentaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornatotalIva1Documento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornatotalIva2Documento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornatotalIva3Documento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaobservacionesDocumento(codigoDoc,codigoTipoDoc)                                                   
-                                                   ,modeloDocumentos.retornaonumeroCuentaBancariaDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaocodigoBancoDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaMontoDescuentoTotalDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaFormaDePagoDocumento(codigoDoc,codigoTipoDoc)
-                                                   ,modeloDocumentos.retornaPorcentajeDescuentoAlTotalDocumento(codigoDoc,codigoTipoDoc)
+                                                   ,codigoTipoDoc                                                   
+                                                   ,modeloDocumentos.retornacodigoEstadoDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornatipoClienteDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornacodigoClienteDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,serieDocumento
+                                                   ,modeloDocumentos.retornacodigoVendedorComisionaDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornacodigoLiquidacionDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornacodigoVendedorLiquidacionDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornafechaEmisionDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornafechaEmisionDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornacodigoMonedaDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornaprecioIvaVentaDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornaprecioSubTotalVentaDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornaprecioTotalVentaDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornatotalIva1Documento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornatotalIva2Documento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornatotalIva3Documento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornaobservacionesDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornaonumeroCuentaBancariaDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornaocodigoBancoDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornaMontoDescuentoTotalDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornaFormaDePagoDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
+                                                   ,modeloDocumentos.retornaPorcentajeDescuentoAlTotalDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
                                                    ,"",""
 
                                                    )
@@ -295,7 +295,7 @@ mostrarMantenimientos(0,"derecha")
     Text {
         id: txtClienteFactura
         color: "#212121"
-        text: modeloLineasDePagoTarjetasCredito.retornaRazonDeCliente(codigoDoc,codigoTipoDoc)
+        text: modeloLineasDePagoTarjetasCredito.retornaRazonDeCliente(codigoDoc,codigoTipoDoc, serieDocumento)
         smooth: true
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 2
@@ -314,7 +314,7 @@ mostrarMantenimientos(0,"derecha")
         x: -7
         y: 3
         color: "#212121"
-        text: "Fecha doc: "+modeloLineasDePagoTarjetasCredito.retornaFechaDocumento(codigoDoc,codigoTipoDoc)
+        text: "Fecha doc: "+modeloLineasDePagoTarjetasCredito.retornaFechaDocumento(codigoDoc,codigoTipoDoc,serieDocumento)
         smooth: true
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 2

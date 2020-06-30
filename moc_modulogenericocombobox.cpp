@@ -22,7 +22,7 @@ static const uint qt_meta_data_ModuloGenericoCombobox[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      16,   14, // methods
+      17,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -42,10 +42,11 @@ static const uint qt_meta_data_ModuloGenericoCombobox[] = {
      295,   23,   23,   23, 0x02,
      334,   23,  326,   23, 0x02,
      358,   23,  326,   23, 0x02,
-     392,   23,  387,   23, 0x02,
-     420,   23,  326,   23, 0x02,
-     448,   23,  326,   23, 0x02,
-     471,   23,  326,   23, 0x02,
+     380,   23,  326,   23, 0x02,
+     414,   23,  409,   23, 0x02,
+     442,   23,  326,   23, 0x02,
+     470,   23,  326,   23, 0x02,
+     493,   23,  326,   23, 0x02,
 
        0        // eod
 };
@@ -60,7 +61,7 @@ static const char qt_meta_stringdata_ModuloGenericoCombobox[] = {
     "buscarTodosLosTipoDocumentos()\0"
     "buscarTodosLosReportes()\0"
     "buscarTodosLosTiposPromocion()\0QString\0"
-    "retornarCodigoItem(int)\0"
+    "retornarCodigoItem(int)\0retornarSerieDoc(int)\0"
     "retornarDescripcionItem(int)\0bool\0"
     "retornarCheckBoxActivo(int)\0"
     "retornarCodigoTipoItem(int)\0"
@@ -90,15 +91,17 @@ void ModuloGenericoCombobox::qt_static_metacall(QObject *_o, QMetaObject::Call _
         case 9: _t->buscarTodosLosTiposPromocion(); break;
         case 10: { QString _r = _t->retornarCodigoItem((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 11: { QString _r = _t->retornarDescripcionItem((*reinterpret_cast< int(*)>(_a[1])));
+        case 11: { QString _r = _t->retornarSerieDoc((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 12: { bool _r = _t->retornarCheckBoxActivo((*reinterpret_cast< int(*)>(_a[1])));
+        case 12: { QString _r = _t->retornarDescripcionItem((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 13: { bool _r = _t->retornarCheckBoxActivo((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 13: { QString _r = _t->retornarCodigoTipoItem((*reinterpret_cast< int(*)>(_a[1])));
+        case 14: { QString _r = _t->retornarCodigoTipoItem((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 14: { QString _r = _t->retornarValorItem((*reinterpret_cast< int(*)>(_a[1])));
+        case 15: { QString _r = _t->retornarValorItem((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 15: { QString _r = _t->retornarDescripcionItemSegundafila((*reinterpret_cast< int(*)>(_a[1])));
+        case 16: { QString _r = _t->retornarDescripcionItemSegundafila((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
         default: ;
         }
@@ -137,9 +140,9 @@ int ModuloGenericoCombobox::qt_metacall(QMetaObject::Call _c, int _id, void **_a
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 16)
+        if (_id < 17)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 16;
+        _id -= 17;
     }
     return _id;
 }

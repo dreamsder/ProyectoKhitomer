@@ -37,8 +37,7 @@ ModuloGenericoCombobox::ModuloGenericoCombobox(QObject *parent)
     roles[valorItemRole] = "valorItem";
     roles[descripcionItemSegundafilaRole] = "descripcionItemSegundafila";
 
-
-
+    roles[serieDocRole] = "serieDoc";
 
 
 
@@ -47,9 +46,11 @@ ModuloGenericoCombobox::ModuloGenericoCombobox(QObject *parent)
 
 
 ModuloGenerico::ModuloGenerico(const QString &codigoItem, const QString &descripcionItem, const bool &checkBoxActivo
-    , const QString &codigoTipoItem, const QString &valorItem, const QString &descripcionItemSegundafila)
+    , const QString &codigoTipoItem, const QString &valorItem, const QString &descripcionItemSegundafila
+    , const QString &serieDoc)
     : m_codigoItem(codigoItem), m_descripcionItem(descripcionItem), m_checkBoxActivo(checkBoxActivo)
     , m_codigoTipoItem(codigoTipoItem), m_valorItem(valorItem), m_descripcionItemSegundafila(descripcionItemSegundafila)
+    , m_serieDoc(serieDoc)
 {
 }
 
@@ -77,7 +78,10 @@ QString ModuloGenerico::descripcionItemSegundafila() const
 {
     return m_descripcionItemSegundafila;
 }
-
+QString ModuloGenerico::serieDoc() const
+{
+    return m_serieDoc;
+}
 
 
 void ModuloGenericoCombobox::agregarModuloGenerico(const ModuloGenerico &moduloGenerico)
@@ -94,7 +98,7 @@ void ModuloGenericoCombobox::limpiarListaModuloGenerico(){
 void ModuloGenericoCombobox::buscarModuloGenerico(){
 
     ModuloGenericoCombobox::limpiarListaModuloGenerico();
-    ModuloGenericoCombobox::agregarModuloGenerico(ModuloGenerico("1","",false,"","",""));
+    ModuloGenericoCombobox::agregarModuloGenerico(ModuloGenerico("1","",false,"","","",""));
 
 }
 void ModuloGenericoCombobox::buscarTodosLosTipoDocumentos(){
@@ -117,7 +121,7 @@ void ModuloGenericoCombobox::buscarTodosLosTipoDocumentos(){
 
                 ModuloGenericoCombobox::agregarModuloGenerico(ModuloGenerico( q.value(rec.indexOf("codigoTipoDocumento")).toString(),
                                                                                  q.value(rec.indexOf("descripcionTipoDocumento")).toString(),
-                                                                                 false,"","",""
+                                                                                false,"","","",""
                                                                                  ));
             }
         }
@@ -144,7 +148,7 @@ void ModuloGenericoCombobox::buscarTodosLosReportes(){
 
                 ModuloGenericoCombobox::agregarModuloGenerico(ModuloGenerico( q.value(rec.indexOf("codigoReporte")).toString(),
                                                                                  q.value(rec.indexOf("descripcionReporte")).toString(),
-                                                                                 false,"","",""
+                                                                              false,"","","",""
                                                                                  ));
             }
         }
@@ -172,7 +176,7 @@ void ModuloGenericoCombobox::buscarTodosLosTiposPromocion(){
 
                 ModuloGenericoCombobox::agregarModuloGenerico(ModuloGenerico( q.value(rec.indexOf("idTipoPromocion")).toString(),
                                                                                  q.value(rec.indexOf("nombreTipoPromocion")).toString(),
-                                                                                 false,"","",""
+                                                                              false,"","","",""
                                                                                  ));
             }
         }
@@ -211,6 +215,10 @@ QVariant ModuloGenericoCombobox::data(const QModelIndex & index, int role) const
     else if (role == descripcionItemSegundafilaRole){
         return moduloGenerico.descripcionItemSegundafila();
     }
+
+    else if (role == serieDocRole){
+        return moduloGenerico.serieDoc();
+    }
     return QVariant();
 }
 
@@ -231,4 +239,7 @@ QString ModuloGenericoCombobox::retornarValorItem(int indice) const{
 }
 QString ModuloGenericoCombobox::retornarDescripcionItemSegundafila(int indice) const{
                 return m_ModuloGenerico[indice].descripcionItemSegundafila();
+}
+QString ModuloGenericoCombobox::retornarSerieDoc(int indice) const{
+                return m_ModuloGenerico[indice].serieDoc();
 }
